@@ -1,0 +1,294 @@
+---
+description: Design system tokens and patterns for pixel-perfect UI recreation
+alwaysApply: true
+---
+
+# CleverDen Design System
+
+Complete design tokens extracted from app screenshots for pixel-perfect UI recreation.
+
+## Color Palette
+
+### Background Colors
+```swift
+extension Color {
+    static let backgroundPrimary = Color.white // Warm light beige - main screen background
+    static let backgroundSecondary = Color(hex: "#EFEBE7") // Slightly warmer variant
+    static let backgroundTertiary = Color(hex: "#E0DCD9") // Slightly warmer variant
+}
+```
+
+### Primary Accent Colors
+```swift
+extension Color {
+    // Orange/Red - Primary action color, progress bars, selected states
+    static let accentOrange = Color(hex: "#FF5A35") // Primary orange
+    static let accentOrangeSubdued = Color(hex: "#FC6441") // Slightly darker variant
+    
+    // Green - Success states, correct answers
+    static let accentGreen = Color(hex: "#2BD471") // Vibrant medium green
+    
+    // Yellow/Gold - Achievements, rewards, active stars
+    static let accentGold = Color(hex: "#FFB73B") // Warm yellow/gold
+    static let accentGoldAlt = Color(hex: "#FF7D35") // Slightly brighter variant
+}
+```
+
+### Text Colors
+```swift
+extension Color {
+    static let textPrimary = Color(hex: "#1D1D1D") // Dark grey - main text
+    static let textSecondary = Color(hex: "#5E5E5E") // Medium grey - secondary text
+    static let textInverted = Color.white // White text on colored backgrounds
+}
+```
+
+## Typography
+
+### Font System
+```swift
+extension Font {
+    // Headlines
+    static let headlineLarge = Font.system(size: 28, weight: .bold) // "Continents", "Level completed"
+    static let headlineMedium = Font.system(size: 24, weight: .bold) // "Great job!"
+    
+    // Body Text
+    static let bodyLarge = Font.system(size: 19, weight: .medium) // Answer options, button text
+    static let body = Font.system(size: 17, weight: .regular) // Standard body text
+    
+    // Question Text
+    static let question = Font.system(size: 28, weight: .bold) // Quiz questions
+    
+    // Labels
+    static let label = Font.system(size: 14, weight: .regular) // "Section 1"
+    static let labelSmall = Font.system(size: 13, weight: .regular) // Item labels
+
+}
+```
+
+## Spacing
+
+### Spacing Scale
+```swift
+extension CGFloat {
+    static let spacingXS: CGFloat = 8   // Smallest spacing (icon-text gap)
+    static let spacingS: CGFloat = 12   // Small spacing
+    static let spacingM: CGFloat = 16   // Medium spacing (card gaps)
+    static let spacingL: CGFloat = 20   // Large spacing (screen padding)
+    static let spacingXL: CGFloat = 24  // Extra large (vertical sections)
+    static let spacingXXL: CGFloat = 32 // Very large (major sections)
+    static let spacingXXXL: CGFloat = 40 // Maximum spacing
+}
+```
+
+### Layout Constants
+```swift
+extension CGFloat {
+    // Screen Padding
+    static let screenPadding: CGFloat = 24  // Horizontal padding from edges
+    static let screenPaddingLarge: CGFloat = 32  // Alternative larger padding
+    
+    // Component Padding
+    static let cardPadding: CGFloat = 16    // Internal card padding
+    static let buttonPaddingV: CGFloat = 16 // Button vertical padding
+    static let buttonPaddingH: CGFloat = 32 // Button horizontal padding
+    
+    // Grid Spacing
+    static let gridGap: CGFloat = 12        // Gap between grid items
+    static let gridGapLarge: CGFloat = 20   // Larger grid gap
+}
+```
+
+## Corner Radius
+
+```swift
+extension CGFloat {
+    static let radiusSmall: CGFloat = 8      // Small elements, status boxes
+    static let radiusMedium: CGFloat = 12    // Progress counters, small cards
+    static let radiusCard: CGFloat = 14      // Answer cards, feedback containers
+    static let radiusLarge: CGFloat = 20     // Section headers, main cards
+    static let radiusXL: CGFloat = 24        // Large cards, buttons
+    static let radiusFull: CGFloat = 999     // Pill shapes, fully rounded
+}
+```
+
+## Shadows
+
+### Shadow System
+```swift
+import SwiftUI
+
+extension View {
+    // Subtle elevation - cards, diamonds
+    func shadowSubtle() -> some View {
+        self.shadow(
+            color: Color.black.opacity(0.08),
+            radius: 4,
+            x: 0,
+            y: 2
+        )
+    }
+    
+    // Medium elevation - section headers, content cards
+    func shadowMedium() -> some View {
+        self.shadow(
+            color: Color.black.opacity(0.15),
+            radius: 8,
+            x: 0,
+            y: 4
+        )
+    }
+    
+    // Pronounced elevation - buttons, prominent elements
+    func shadowPronounced() -> some View {
+        self.shadow(
+            color: Color.black.opacity(0.15),
+            radius: 12,
+            x: 0,
+            y: 6
+        )
+    }
+}
+```
+
+## Component Patterns
+
+### Answer Card (Quiz)
+```swift
+struct AnswerCard: View {
+    let text: String
+    let isSelected: Bool
+    let isCorrect: Bool?
+    
+    var body: some View {
+        ZStack {
+            // Background
+            RoundedRectangle(cornerRadius: .radiusCard)
+                .fill(isSelected ? (isCorrect == true ? .accentGreen : .accentOrange) : .cardBackground)
+                .shadowSubtle()
+            
+            // Content
+            Text(text)
+                .font(.bodyLarge)
+                .foregroundColor(isSelected ? .textOnAccent : .textPrimary)
+                .padding(.cardPadding)
+            
+            // Decorative dots for selected state
+            if isSelected {
+                // Add decorative dots at corners
+            }
+        }
+    }
+}
+```
+
+### Progress Bar
+```swift
+struct ProgressBar: View {
+    let progress: Double // 0.0 to 1.0
+    
+    var body: some View {
+        GeometryReader { geometry in
+            ZStack(alignment: .leading) {
+                // Track
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(Color.progressTrack)
+                
+                // Fill
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(Color.accentOrange)
+                    .frame(width: geometry.size.width * progress)
+            }
+        }
+        .frame(height: 8)
+    }
+}
+```
+
+### Content Card (Circular)
+```swift
+struct ContentCard: View {
+    let icon: String
+    let label: String
+    let stars: Int // 0-3
+    let isActive: Bool
+    
+    var body: some View {
+        VStack(spacing: .spacingS) {
+            // Main circle
+            Circle()
+                .fill(isActive ? .accentOrange : .inactiveGrey)
+                .frame(width: 100, height: 100)
+                .overlay(
+                    Image(systemName: icon)
+                        .font(.system(size: 40))
+                        .foregroundColor(.inactiveIcon)
+                )
+                .shadowSubtle()
+            
+            // Stars
+            HStack(spacing: 4) {
+                ForEach(0..<3) { index in
+                    Image(systemName: "diamond.fill")
+                        .font(.system(size: 12))
+                        .foregroundColor(index < stars ? .accentGold : .inactiveStar)
+                }
+            }
+            
+            // Label
+            Text(label)
+                .font(.labelSmall)
+                .foregroundColor(isActive ? .textSecondary : .textInactive)
+        }
+    }
+}
+```
+
+### Primary Button
+```swift
+struct PrimaryButton: View {
+    let title: String
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(.bodyLarge)
+                .fontWeight(.bold)
+                .foregroundColor(.textOnAccent)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, .buttonPaddingV)
+                .padding(.horizontal, .buttonPaddingH)
+                .background(Color.accentOrange)
+                .cornerRadius(.radiusLarge)
+                .shadowPronounced()
+        }
+    }
+}
+```
+
+## Usage Guidelines
+
+### Color Usage
+- **Background**: Always use `.backgroundSecondary` for main screen backgrounds
+- **Cards**: Use `.backgroundPrimary` (white) with `.shadowSubtle()` or `.shadowMedium()`
+- **Primary Actions**: Use `.accentOrange` for buttons, progress bars, selected states
+- **Success**: Use `.accentGreen` for correct answers, success states
+- **Rewards**: Use `.accentGold` for achievements, stars, progress indicators
+
+### Typography Hierarchy
+- **Questions**: Use `.question` font (30pt, bold)
+- **Headlines**: Use `.headlineLarge` for main titles, `.headlineMedium` for secondary
+- **Body**: Use `.bodyLarge` for important text, `.body` for standard content
+- **Labels**: Use `.label` or `.labelSmall` for secondary information
+
+### Spacing Consistency
+- Always use spacing constants (`.spacingM`, `.spacingL`, etc.) instead of magic numbers
+- Screen edges: `.screenPadding` (20pt) or `.screenPaddingLarge` (24pt)
+- Between major sections: `.spacingXL` or `.spacingXXL`
+- Between related elements: `.spacingM` or `.spacingL`
+
+### Component Reusability
+- Use the provided component patterns as starting points
+- Maintain consistent corner radii, shadows, and spacing
+- Follow the color system strictly for pixel-perfect recreation
