@@ -1,0 +1,248 @@
+---
+description: SwiftUI component structure and organization guidelines
+alwaysApply: true
+globs: **/*View.swift
+---
+
+# SwiftUI Component Structure Guidelines
+
+## Component Organization
+
+Organize your SwiftUI views with a consistent structure following these guidelines:
+
+### 1. Property Declarations
+
+Start with property declarations in this order:
+- Environment objects and variables
+- State properties
+- Binding properties
+- Derived/computed properties
+
+```swift
+// ✅ GOOD
+struct ContentView: View {
+    // Environment properties
+    @Environment(\.colorScheme) var colorScheme
+    
+    // State properties
+    @State private var isLoading = false
+    @State private var searchText = ""
+    
+    // Observable model objects (using the new Observable macro)
+    @State private var viewModel = ViewModel()
+    
+    // Bindings
+    @Binding var selectedItem: Item?
+    
+    // Computed properties
+    var filteredItems: [Item] {
+        // Filter logic here
+    }
+    
+    var body: some View {
+        // View content
+    }
+}
+```
+
+### 2. View Composition
+
+Break down complex views into smaller subviews:
+
+```swift
+struct ProfileView: View {
+    var body: some View {
+        VStack {
+            ProfileHeaderView()
+            ProfileDetailsView()
+            ProfileActionsView()
+        }
+    }
+}
+
+// Extract subviews as private or separate components
+private struct ProfileHeaderView: View {
+    var body: some View {
+        // Header implementation
+    }
+}
+```
+
+### 3. View Modifiers
+
+Group related modifiers together and use consistent ordering:
+1. Layout modifiers (frame, padding, alignment)
+2. Visual modifiers (foregroundColor, background, cornerRadius)
+3. Interactive modifiers (onTap, gesture)
+4. Conditional modifiers
+
+```swift
+// ✅ GOOD
+Text("Hello World")
+    // Layout
+    .frame(maxWidth: .infinity)
+    .padding()
+    // Visual
+    .foregroundColor(.white)
+    .background(Color.blue)
+    .cornerRadius(8)
+    // Interactive
+    .onTapGesture { /* action */ }
+```
+
+### 4. ViewBuilder Methods
+
+Extract repeated view patterns into @ViewBuilder methods:
+
+```swift
+struct ItemListView: View {
+    var items: [Item]
+    
+    var body: some View {
+        List {
+            ForEach(items) { item in
+                itemRow(for: item)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func itemRow(for item: Item) -> some View {
+        HStack {
+            Image(systemName: item.icon)
+            Text(item.title)
+            Spacer()
+            Text(item.subtitle)
+        }
+    }
+}
+```
+
+### 5. Modern State Management
+
+Use the appropriate state management based on the data's scope and lifecycle:
+
+```swift
+// ✅ GOOD - Using the new Observable macro (iOS 17+)
+@Observable
+class UserViewModel {
+    var username = ""
+    var isLoggedIn = false
+    
+    // Non-observed property
+    @ObservationIgnored
+    private var internalState = ""
+}
+
+// In your view
+struct UserProfileView: View {
+    @State private var viewModel = UserViewModel()
+    // or for a shared model
+    @Environment(UserViewModel.self) var viewModel
+    
+    // For bindings to an observable type
+    @Bindable var editableViewModel: UserViewModel
+    
+    var body: some View {
+        TextField("Username", text: $editableViewModel.username)
+    }
+}
+```
+
+### 6. Performance Optimization
+
+Improve view performance by following these guidelines:
+
+```swift
+// ✅ GOOD - Keep expensive operations out of the view body
+struct OptimizedView: View {
+    @State private var items: [Item] = []
+    
+    // Expensive work happens here, not in the view body
+    private func fetchItems() async {
+        do {
+            // Fetch items asynchronously
+            let result = try await itemService.fetchItems()
+            items = result
+        } catch {
+            // Handle error
+        }
+    }
+    
+    var body: some View {
+        List(items) { item in
+            ItemRow(item: item)
+        }
+        .task {
+            await fetchItems()
+        }
+    }
+}
+```
+
+- Avoid computing values in the view body
+- Use `id(...)` for stable identity when appropriate
+- Prefer local state over global state when possible
+- Avoid closures that capture excessive state in views
+- Break complex views into smaller components
+
+### 7. Previews
+
+Include SwiftUI previews for each view with sample data:
+
+```swift
+#Preview {
+    ContentView(item: sampleItem)
+        .preferredColorScheme(.light)
+}
+
+#Preview("Dark Mode") {
+    ContentView(item: sampleItemEmpty)
+        .preferredColorScheme(.dark)
+}
+```
+
+### 8. Accessibility
+
+Make your components accessible:
+
+```swift
+// ✅ GOOD
+Image(systemName: "heart.fill")
+    .accessibilityLabel("Favorite")
+    .accessibilityHint("Double tap to favorite this item")
+
+Text("Welcome")
+    .font(.title)
+    .accessibilityAddTraits(.isHeader)
+```
+
+### 9. Error Handling
+
+Handle errors gracefully in your components:
+
+```swift
+struct ContentView: View {
+    @State private var errorMessage: String?
+    
+    var body: some View {
+        VStack {
+            // Main content here
+            
+            // Error display
+            if let error = errorMessage {
+                Text(error)
+                    .foregroundColor(.red)
+                    .padding()
+            }
+        }
+        .task {
+            do {
+                // Try to load content
+            } catch {
+                errorMessage = error.localizedDescription
+            }
+        }
+    }
+}
+```

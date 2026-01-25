@@ -1,0 +1,469 @@
+---
+description: Swift best practices for safe, efficient coding
+alwaysApply: true
+globs: **/*.swift
+---
+
+# Swift Best Practices
+
+This guide outlines recommended practices for Swift development to help avoid common errors and write more robust code. Following these guidelines will help reduce runtime crashes and improve code quality.
+
+## Optional Handling
+
+Swift's Optional type represents either a wrapped value or the absence of a value (`nil`). Improper handling of optionals is a common source of runtime crashes.
+
+### 1. Avoid Force Unwrapping (`!`)
+
+Force unwrapping with `!` causes crashes when the optional is `nil`.
+
+```swift
+// ❌ BAD: Force unwrapping can cause runtime crashes
+let text = textField.text!
+let number = Int(input)!
+
+// ✅ GOOD: Use optional binding for safe unwrapping
+if let text = textField.text {
+    // Use text safely here
+}
+
+if let number = Int(input) {
+    // Use number safely here
+}
+```
+
+### 2. Use Optional Binding
+
+Conditionally bind optional values to safely unwrap them:
+
+```swift
+// ✅ GOOD: Using if let
+if let username = user?.name {
+    print("Hello, \(username)")
+}
+
+// ✅ GOOD: Using guard let for early exits
+guard let account = accounts[id] else {
+    print("Account not found")
+    return
+}
+// Use account safely here
+```
+
+### 3. Nil Coalescing Operator
+
+Provide default values using the `??` operator:
+
+```swift
+// ✅ GOOD: Using nil coalescing for defaults
+let username = user?.name ?? "Guest"
+let count = data?.count ?? 0
+
+// Chain multiple nil coalescing operators
+let displayName = user?.nickname ?? user?.name ?? "Anonymous"
+```
+
+### 4. Optional Chaining
+
+Access properties and methods of an optional value safely:
+
+```swift
+// ✅ GOOD: Optional chaining
+let fileExtension = path?.extension?.lowercased()
+
+// With conditional checking
+if user?.isPremium == true {
+    // User is premium
+}
+```
+
+### 5. Implicitly Unwrapped Optionals
+
+Use sparingly, only when you're certain the value exists after initialization:
+
+```swift
+// ⚠️ USE WITH CAUTION: Only when the value will always exist after setup
+@IBOutlet var button: UIButton! // Common in Interface Builder
+```
+
+## Error Handling
+
+Proper error handling improves code robustness and makes debugging easier.
+
+### 1. Use Swift's Native Error Handling
+
+```swift
+// ✅ GOOD: Define custom error types
+enum DataError: Error {
+    case invalidFormat
+    case missingRequiredField(String)
+    case networkError(underlying: Error)
+}
+
+// ✅ GOOD: Use throwing functions
+func processData() throws -> Result {
+    guard isValidFormat else {
+        throw DataError.invalidFormat
+    }
+    // Process data
+    return result
+}
+```
+
+### 2. Try-Catch Patterns
+
+Handle errors with appropriate granularity:
+
+```swift
+// ✅ GOOD: Basic try-catch
+do {
+    let result = try processData()
+    // Use result
+} catch {
+    print("Processing failed: \(error)")
+}
+
+// ✅ GOOD: Catching specific errors
+do {
+    let data = try fetchUserData(for: userID)
+    // Use data
+} catch DataError.missingRequiredField(let fieldName) {
+    print("Missing required field: \(fieldName)")
+} catch DataError.networkError(let underlyingError) {
+    print("Network error: \(underlyingError)")
+} catch {
+    print("Unknown error: \(error)")
+}
+```
+
+### 3. Try? and Try!
+
+```swift
+// ✅ GOOD: Using try? when you only care if it succeeded
+let data = try? JSONSerialization.data(withJSONObject: json)
+
+// ⚠️ USE WITH CAUTION: Try! only when you're certain it won't fail
+// let image = try! UIImage(data: validImageData)
+```
+
+### 4. Result Type
+
+Use for asynchronous APIs or when you want to pass success/failure:
+
+```swift
+// ✅ GOOD: Using Result type
+func fetchUser(id: String, completion: @escaping (Result<User, Error>) -> Void) {
+    // Implementation
+}
+
+// Using the result
+fetchUser(id: "123") { result in
+    switch result {
+    case .success(let user):
+        // Handle success
+    case .failure(let error):
+        // Handle error
+    }
+}
+```
+
+### 5. Defer for Cleanup
+
+Ensure resources are always cleaned up:
+
+```swift
+// ✅ GOOD: Using defer for cleanup
+func processFile(at url: URL) throws {
+    let file = try FileHandle(forReadingFrom: url)
+    defer {
+        file.closeFile()
+    }
+    
+    // Process file - even if this throws, file will be closed
+}
+```
+
+## Swift Design Patterns
+
+Using appropriate design patterns improves code maintainability and readability.
+
+### 1. MVVM (Model-View-ViewModel)
+
+Separate your UI logic from business logic:
+
+```swift
+// ✅ GOOD: MVVM Structure
+// Model
+struct User {
+    let id: String
+    let name: String
+    let email: String
+}
+
+// ViewModel
+class UserViewModel {
+    private let user: User
+    
+    init(user: User) {
+        self.user = user
+    }
+    
+    var displayName: String {
+        return user.name
+    }
+    
+    var emailLabelText: String {
+        return "Email: \(user.email)"
+    }
+}
+
+// View (in SwiftUI)
+struct UserView: View {
+    let viewModel: UserViewModel
+    
+    var body: some View {
+        VStack {
+            Text(viewModel.displayName)
+                .font(.headline)
+            Text(viewModel.emailLabelText)
+        }
+    }
+}
+```
+
+### 2. Dependency Injection
+
+Pass dependencies instead of creating them internally:
+
+```swift
+// ❌ BAD: Hard-coded dependencies
+class UserService {
+    private let networkClient = NetworkClient()
+    
+    func fetchUser() { /* ... */ }
+}
+
+// ✅ GOOD: Dependency injection
+class UserService {
+    private let networkClient: NetworkClientProtocol
+    
+    init(networkClient: NetworkClientProtocol) {
+        self.networkClient = networkClient
+    }
+    
+    func fetchUser() { /* ... */ }
+}
+```
+
+### 3. Protocol-Oriented Programming
+
+Use protocols to define behavior contracts:
+
+```swift
+// ✅ GOOD: Protocol-oriented approach
+protocol Authenticating {
+    func login(email: String, password: String) async throws -> User
+    func logout() async
+}
+
+class AuthService: Authenticating {
+    func login(email: String, password: String) async throws -> User {
+        // Implementation
+    }
+    
+    func logout() async {
+        // Implementation
+    }
+}
+
+// Easy to mock for testing
+class MockAuthService: Authenticating {
+    func login(email: String, password: String) async throws -> User {
+        return User(id: "mock", name: "Mock User", email: email)
+    }
+    
+    func logout() async {}
+}
+```
+
+### 4. Value Types vs Reference Types
+
+- Use `struct` for data models and value semantics
+- Use `class` when identity or reference semantics are needed
+
+```swift
+// ✅ GOOD: Struct for value types
+struct ProductItem {
+    let id: String
+    let name: String
+    let price: Double
+}
+
+// ✅ GOOD: Class for reference types
+class ShoppingCart {
+    private(set) var items: [ProductItem] = []
+    
+    func add(item: ProductItem) {
+        items.append(item)
+    }
+}
+```
+
+## Memory Management
+
+Avoid retain cycles and memory leaks.
+
+### 1. Weak and Unowned References
+
+Break potential retain cycles:
+
+```swift
+// ✅ GOOD: Using weak to avoid retain cycles
+class Presenter {
+    weak var view: View?
+    
+    func updateView() {
+        view?.update()
+    }
+}
+
+// ✅ GOOD: Using unowned when reference will never be nil during usage
+class Child {
+    unowned let parent: Parent
+    
+    init(parent: Parent) {
+        self.parent = parent
+    }
+}
+```
+
+### 2. Closure Capture Lists
+
+Explicitly define capture semantics in closures:
+
+```swift
+// ❌ BAD: Implicit strong reference can cause retain cycle
+class ViewModel {
+    var onUpdate: (() -> Void)?
+    
+    func setup() {
+        onUpdate = {
+            self.updateData() // Strong reference to self
+        }
+    }
+    
+    func updateData() { /* ... */ }
+}
+
+// ✅ GOOD: Using weak self in closures
+class ViewModel {
+    var onUpdate: (() -> Void)?
+    
+    func setup() {
+        onUpdate = { [weak self] in
+            guard let self = self else { return }
+            self.updateData()
+        }
+    }
+    
+    func updateData() { /* ... */ }
+}
+```
+
+## Concurrency
+
+Use modern Swift concurrency for clear, safe async code.
+
+### 1. Async/Await
+
+```swift
+// ✅ GOOD: Using modern async/await
+func fetchUserData() async throws -> UserData {
+    let data = try await networkClient.fetchData(from: userEndpoint)
+    return try JSONDecoder().decode(UserData.self, from: data)
+}
+
+// Usage
+Task {
+    do {
+        let userData = try await fetchUserData()
+        // Update UI with userData
+    } catch {
+        // Handle error
+    }
+}
+```
+
+### 2. Task Management
+
+```swift
+// ✅ GOOD: Managing task lifecycles
+class ProfileViewModel {
+    private var fetchTask: Task<Void, Never>?
+    
+    func loadProfile() {
+        // Cancel previous task if it exists
+        fetchTask?.cancel()
+        
+        fetchTask = Task {
+            do {
+                let profile = try await fetchUserProfile()
+                // Handle successful fetch
+            } catch {
+                // Handle error
+            }
+        }
+    }
+    
+    func cancelLoading() {
+        fetchTask?.cancel()
+    }
+}
+```
+
+## Type Safety
+
+Leverage Swift's type system to prevent errors at compile time.
+
+### 1. Avoiding Any and AnyObject
+
+```swift
+// ❌ BAD: Using Any loses type information
+func process(data: Any) {
+    // Type casting needed
+}
+
+// ✅ GOOD: Using generics for type safety
+func process<T>(data: T) {
+    // T is a concrete type
+}
+
+// ✅ GOOD: Using protocols for type constraints
+func process<T: Codable>(data: T) {
+    // T is a Codable type
+}
+```
+
+### 2. Safe Type Casting
+
+```swift
+// ✅ GOOD: Conditional downcasting with as?
+if let button = view as? UIButton {
+    // Use button safely
+}
+
+// ✅ GOOD: Handling different types with switch and pattern matching
+func handle(value: Any) {
+    switch value {
+    case let string as String:
+        print("String value: \(string)")
+    case let number as Int:
+        print("Int value: \(number)")
+    case let array as [Any]:
+        print("Array with \(array.count) items")
+    default:
+        print("Unknown type")
+    }
+}
+```
+
+By following these best practices, you'll write safer, more maintainable Swift code with fewer runtime errors.
