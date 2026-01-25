@@ -1,0 +1,65 @@
+//
+//  ProfileView.swift
+//  CleverDen
+//
+//  Created by Iurii Tanskyi on 1/25/26.
+//
+
+import SwiftUI
+
+struct ProfileView: View {
+    let userProgress: UserProgress
+    
+    var body: some View {
+        ZStack {
+            Color.backgroundSecondary
+                .ignoresSafeArea()
+            
+            VStack(spacing: .spacingXL) {
+                // Profile header
+                VStack(spacing: .spacingM) {
+                    Image(systemName: "pawprint.fill")
+                        .font(.system(size: 60))
+                        .foregroundColor(.accentOrange)
+                    
+                    Text("Profile")
+                        .font(.headlineLarge)
+                        .foregroundColor(.textPrimary)
+                }
+                .padding(.top, .spacingXXL)
+                
+                // Statistics
+                VStack(spacing: .spacingL) {
+                    StatCard(title: "Total Coins", value: "\(userProgress.coins)")
+                    StatCard(title: "Lessons Completed", value: "\(userProgress.completedLessons.count)")
+                }
+                .padding(.horizontal, .screenPadding)
+                
+                Spacer()
+            }
+        }
+    }
+}
+
+struct StatCard: View {
+    let title: String
+    let value: String
+    
+    var body: some View {
+        HStack {
+            Text(title)
+                .font(.body)
+                .foregroundColor(.textSecondary)
+            
+            Spacer()
+            
+            Text(value)
+                .font(.headlineMedium)
+                .foregroundColor(.textPrimary)
+        }
+        .padding(.cardPadding)
+        .background(Color.backgroundPrimary)
+        .cornerRadius(.radiusCard)
+        .shadowSubtle()
+    }
+}

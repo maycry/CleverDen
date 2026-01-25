@@ -11,6 +11,7 @@ struct LessonPill: View {
     let lesson: Lesson
     let status: Lesson.Status
     let isNextLesson: Bool
+    @State private var pulseScale: CGFloat = 1.0
     
     var body: some View {
         VStack(spacing: .spacingS) {
@@ -20,6 +21,7 @@ struct LessonPill: View {
                     .fill(backgroundColor)
                     .frame(width: circleSize, height: circleSize)
                     .shadowSubtle()
+                    .scaleEffect(pulseScale)
                 
                 Image(systemName: lesson.iconName)
                     .font(.system(size: iconSize))
@@ -38,6 +40,25 @@ struct LessonPill: View {
                 .multilineTextAlignment(.center)
         }
         .frame(width: pillWidth)
+        .onAppear {
+            if isNextLesson {
+                // Pulse animation for next lesson
+                withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
+                    pulseScale = 1.05
+                }
+            }
+        }
+        .onChange(of: isNextLesson) { oldValue, newValue in
+            if newValue {
+                withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
+                    pulseScale = 1.05
+                }
+            } else {
+                withAnimation {
+                    pulseScale = 1.0
+                }
+            }
+        }
     }
     
     private var backgroundColor: Color {
