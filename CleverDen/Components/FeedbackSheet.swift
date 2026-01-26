@@ -33,11 +33,15 @@ struct FeedbackSheet: View {
             // Continue button
             PrimaryButton(title: "Continue", action: onContinue)
                 .padding(.horizontal, .screenPadding)
-                .padding(.bottom, .spacingL)
+                .padding(.bottom, .spacingXL)
                 .opacity(contentOpacity)
         }
-        .background(Color.backgroundPrimary)
-        .cornerRadius(.radiusLarge, corners: [.topLeft, .topRight])
+        .frame(maxWidth: .infinity)
+        .background(
+            Color.backgroundPrimary
+                .cornerRadius(.radiusLarge, corners: [.topLeft, .topRight])
+                .ignoresSafeArea(edges: .bottom)
+        )
         .shadowMedium()
         .onAppear {
             // Animate icon bounce
