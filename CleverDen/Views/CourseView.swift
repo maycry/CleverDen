@@ -7,20 +7,18 @@
 
 import SwiftUI
 
+struct LessonNavigationItem: Identifiable {
+    let id: String
+    let lesson: Lesson
+}
+
 struct CourseView: View {
     @State private var viewModel = CourseViewModel()
     @State private var selectedTab: FloatingNavBar.Tab = .home
     @State private var scrollOffset: CGFloat = 0
     @State private var currentSectionId: String?
     @State private var scrollToLessonId: String?
-    @State private var selectedLesson: Lesson?
-    @State private var completedLessonData: CompletedLessonData?
-    
-    struct CompletedLessonData: Identifiable {
-        let id: String
-        let lesson: Lesson
-        let errorCount: Int
-    }
+    @State private var selectedLessonItem: LessonNavigationItem?
     
     var body: some View {
         ZStack {
@@ -42,7 +40,7 @@ struct CourseView: View {
                                         viewModel: viewModel,
                                         scrollToLessonId: $scrollToLessonId,
                                         onLessonTap: { lesson in
-                                            selectedLesson = lesson
+                                            selectedLessonItem = LessonNavigationItem(id: lesson.id, lesson: lesson)
                                         }
                                     )
                                     .id(section.id)
@@ -77,32 +75,15 @@ struct CourseView: View {
                 }
             }
         }
-        .fullScreenCover(item: $selectedLesson) { lesson in
-            LessonView(
-                lesson: lesson,
+        .fullScreenCover(item: $selectedLessonItem) { item in
+            LessonFlowView(
+                lesson: item.lesson,
                 userProgress: $viewModel.userProgress,
                 onDismiss: {
-                    selectedLesson = nil
+                    selectedLessonItem = nil
                 },
-                onComplete: { errorCount in
-                    selectedLesson = nil
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        completedLessonData = CompletedLessonData(
-                            id: lesson.id,
-                            lesson: lesson,
-                            errorCount: errorCount
-                        )
-                    }
-                }
-            )
-        }
-        .fullScreenCover(item: $completedLessonData) { data in
-            LessonCompleteView(
-                lesson: data.lesson,
-                errorCount: data.errorCount,
-                userProgress: $viewModel.userProgress,
-                onContinue: {
-                    completedLessonData = nil
+                onComplete: {
+                    selectedLessonItem = nil
                     viewModel.saveProgress()
                     
                     // Auto-scroll to next lesson
@@ -123,6 +104,50 @@ struct CourseView: View {
         }) {
             withAnimation(.easeInOut(duration: 0.5)) {
                 proxy.scrollTo(section.id, anchor: .top)
+            }
+        }
+    }
+    
+}
+
+// Wrapper view that manages the transition from LessonView to LessonCompleteView
+// This ensures SwiftUI treats it as a single presentation throughout
+struct LessonFlowView: View {
+    let lesson: Lesson
+    @Binding var userProgress: UserProgress
+    let onDismiss: () -> Void
+    let onComplete: () -> Void
+    
+    @State private var showCompletion = false
+    @State private var errorCount = 0
+    
+    var body: some View {
+        ZStack {
+            // Background color to prevent black flash during transition
+            Color.backgroundSecondary
+                .ignoresSafeArea()
+            
+            if showCompletion {
+                LessonCompleteView(
+                    lesson: lesson,
+                    errorCount: errorCount,
+                    userProgress: $userProgress,
+                    onContinue: onComplete
+                )
+                .transition(.opacity)
+            } else {
+                LessonView(
+                    lesson: lesson,
+                    userProgress: $userProgress,
+                    onDismiss: onDismiss,
+                    onComplete: { count in
+                        errorCount = count
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            showCompletion = true
+                        }
+                    }
+                )
+                .transition(.opacity)
             }
         }
     }
