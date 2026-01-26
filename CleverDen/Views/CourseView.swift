@@ -26,38 +26,36 @@ struct CourseView: View {
                 .ignoresSafeArea()
             
             if selectedTab == .home {
-                VStack(spacing: 0) {
-                    // Top Navigation Bar
-                    TopNavigationBar(coins: viewModel.userProgress.coins)
-                    
-                    // Main Content
-                    ScrollViewReader { proxy in
-                        ScrollView {
-                            VStack(spacing: .spacingXL) {
-                                ForEach(viewModel.sections) { section in
-                                    SectionView(
-                                        section: section,
-                                        viewModel: viewModel,
-                                        scrollToLessonId: $scrollToLessonId,
-                                        onLessonTap: { lesson in
-                                            selectedLessonItem = LessonNavigationItem(id: lesson.id, lesson: lesson)
-                                        }
-                                    )
-                                    .id(section.id)
-                                }
+                // Main Content - Full Screen ScrollView
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        VStack(spacing: .spacingXL) {
+                            ForEach(viewModel.sections) { section in
+                                SectionView(
+                                    section: section,
+                                    viewModel: viewModel,
+                                    scrollToLessonId: $scrollToLessonId,
+                                    onLessonTap: { lesson in
+                                        selectedLessonItem = LessonNavigationItem(id: lesson.id, lesson: lesson)
+                                    }
+                                )
+                                .id(section.id)
                             }
-                            .padding(.horizontal, .screenPadding)
-                            .padding(.top, .spacingM)
-                            .padding(.bottom, 100) // Space for floating nav bar
                         }
-                        .onChange(of: scrollToLessonId) { oldValue, newValue in
-                            if let lessonId = newValue {
-                                scrollToLesson(lessonId: lessonId, proxy: proxy)
-                            }
+                        .padding(.horizontal, .screenPadding)
+                        .padding(.top, .spacingXXL + .spacingXXL + 10) // Space for top nav bar
+                        .padding(.bottom, 100) // Space for floating nav bar
+                    }
+                    .onChange(of: scrollToLessonId) { oldValue, newValue in
+                        if let lessonId = newValue {
+                            scrollToLesson(lessonId: lessonId, proxy: proxy)
                         }
                     }
-                    
-                    // Floating Navigation Bar
+                }
+                .overlay(alignment: .top) {
+                    TopNavigationBar(coins: viewModel.userProgress.coins)
+                }
+                .overlay(alignment: .bottom) {
                     FloatingNavBar(selectedTab: $selectedTab)
                 }
             } else {
