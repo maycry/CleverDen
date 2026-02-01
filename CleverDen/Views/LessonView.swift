@@ -11,6 +11,7 @@ struct LessonView: View {
     let lesson: Lesson
     @State private var viewModel: LessonViewModel
     @State private var showFeedbackSheet = false
+    @State private var questionTransitionId: Int = 0
     @Binding var userProgress: UserProgress
     let onDismiss: () -> Void
     let onComplete: (Int) -> Void // Pass error count
@@ -42,35 +43,45 @@ struct LessonView: View {
                 }
             } else {
                 VStack(spacing: 0) {
-                    // Top Bar
+                    // Top Bar (stays put)
                     LessonTopBar(progress: viewModel.progress) {
                         onDismiss()
                     }
                     
-                    ScrollView {
-                        VStack(spacing: .spacingXL) {
-                            // Question
-                            QuestionView(question: viewModel.currentQuestion)
-                            
-                            // Answer Grid
-                            answerGrid
-                                .padding(.horizontal, .screenPadding)
-                                .padding(.bottom, showFeedbackSheet ? 200 : .spacingXL)
+                    // Animating content layer
+                    ZStack {
+                        ScrollView {
+                            VStack(spacing: .spacingXL) {
+                                // Question
+                                QuestionView(question: viewModel.currentQuestion)
+                                
+                                // Answer Grid
+                                answerGrid
+                                    .padding(.horizontal, .screenPadding)
+                                    .padding(.bottom, showFeedbackSheet ? 200 : .spacingXL)
+                            }
+                        }
+                        
+                        // Feedback Sheet as part of the animating content
+                        VStack {
+                            Spacer()
+                            if showFeedbackSheet {
+                                FeedbackSheet(
+                                    isCorrect: viewModel.selectedAnswerId == viewModel.currentQuestion.correctAnswerId,
+                                    onContinue: handleContinue
+                                )
+                            }
                         }
                     }
-                }
-                .overlay(alignment: .bottom) {
-                    // Feedback Sheet
-                    if showFeedbackSheet {
-                        FeedbackSheet(
-                            isCorrect: viewModel.selectedAnswerId == viewModel.currentQuestion.correctAnswerId,
-                            onContinue: handleContinue
-                        )
-                        .transition(.move(edge: .bottom).combined(with: .opacity))
-                    }
+                    .id(questionTransitionId) // Forces re-render with transition
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .trailing),
+                        removal: .move(edge: .leading)
+                    ))
                 }
             }
         }
+        .animation(.easeInOut(duration: 0.35), value: questionTransitionId)
         .animation(.spring(response: 0.3, dampingFraction: 0.8), value: showFeedbackSheet)
     }
     
@@ -107,19 +118,15 @@ struct LessonView: View {
     }
     
     private func handleContinue() {
-        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-            showFeedbackSheet = false
-        }
-        
         if viewModel.isLastQuestion {
-            // Navigate to completion screen
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                onComplete(viewModel.errorCount)
-            }
+            // Navigate to completion screen (handled by LessonFlowView)
+            onComplete(viewModel.errorCount)
         } else {
-            // Move to next question
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            // Animate transition to next question
+            withAnimation(.easeInOut(duration: 0.35)) {
+                showFeedbackSheet = false
                 viewModel.moveToNextQuestion()
+                questionTransitionId += 1 // Trigger transition
             }
         }
     }

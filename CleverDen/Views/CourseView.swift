@@ -125,6 +125,24 @@ struct LessonFlowView: View {
             Color.backgroundSecondary
                 .ignoresSafeArea()
             
+            // Lesson view - slides left when removed
+            if !showCompletion {
+                LessonView(
+                    lesson: lesson,
+                    userProgress: $userProgress,
+                    onDismiss: onDismiss,
+                    onComplete: { count in
+                        errorCount = count
+                        withAnimation(.easeInOut(duration: 0.4)) {
+                            showCompletion = true
+                        }
+                    }
+                )
+                .transition(.move(edge: .leading))
+                .zIndex(showCompletion ? 0 : 1)
+            }
+            
+            // Complete view - slides from right when inserted
             if showCompletion {
                 LessonCompleteView(
                     lesson: lesson,
@@ -132,20 +150,8 @@ struct LessonFlowView: View {
                     userProgress: $userProgress,
                     onContinue: onComplete
                 )
-                .transition(.opacity)
-            } else {
-                LessonView(
-                    lesson: lesson,
-                    userProgress: $userProgress,
-                    onDismiss: onDismiss,
-                    onComplete: { count in
-                        errorCount = count
-                        withAnimation(.easeInOut(duration: 0.3)) {
-                            showCompletion = true
-                        }
-                    }
-                )
-                .transition(.opacity)
+                .transition(.move(edge: .trailing))
+                .zIndex(showCompletion ? 1 : 0)
             }
         }
     }
