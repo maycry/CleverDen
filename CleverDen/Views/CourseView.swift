@@ -26,23 +26,45 @@ struct CourseView: View {
                 .ignoresSafeArea()
             
             if selectedTab == .home {
-                // Main Content - Full Screen ScrollView
+                // Main Content - Full Screen ScrollView with Sticky Headers
                 ScrollViewReader { proxy in
                     ScrollView {
-                        VStack(spacing: .spacingXL) {
+                        LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
                             ForEach(viewModel.sections) { section in
-                                SectionView(
-                                    section: section,
-                                    viewModel: viewModel,
-                                    scrollToLessonId: $scrollToLessonId,
-                                    onLessonTap: { lesson in
-                                        selectedLessonItem = LessonNavigationItem(id: lesson.id, lesson: lesson)
+                                SwiftUI.Section {
+                                    // Lesson Pills
+                                    VStack(spacing: .spacingM) {
+                                        ForEach(section.lessons) { lesson in
+                                            let status = viewModel.getLessonStatus(lesson)
+                                            let isNextLesson = viewModel.getNextAvailableLesson()?.id == lesson.id
+                                            
+                                            Button(action: {
+                                                if status != .locked {
+                                                    selectedLessonItem = LessonNavigationItem(id: lesson.id, lesson: lesson)
+                                                }
+                                            }) {
+                                                LessonPill(
+                                                    lesson: lesson,
+                                                    status: status,
+                                                    isNextLesson: isNextLesson
+                                                )
+                                                .contentShape(Rectangle())
+                                            }
+                                            .buttonStyle(LessonPillButtonStyle())
+                                            .disabled(status == .locked)
+                                            .id(lesson.id)
+                                        }
                                     }
-                                )
+                                    .padding(.horizontal, .screenPadding)
+                                    .padding(.bottom, .spacingXL)
+                                } header: {
+                                    SectionHeader(section: section)
+                                        .padding(.horizontal, .screenPadding)
+                                        .padding(.top, .spacingXXL + .spacingXXL)
+                                }
                                 .id(section.id)
                             }
                         }
-                        .padding(.horizontal, .screenPadding)
                         .padding(.top, .spacingXXL + .spacingXXL + 10) // Space for top nav bar
                         .padding(.bottom, 100) // Space for floating nav bar
                     }
@@ -152,45 +174,6 @@ struct LessonFlowView: View {
                 )
                 .transition(.move(edge: .trailing))
                 .zIndex(showCompletion ? 1 : 0)
-            }
-        }
-    }
-}
-
-struct SectionView: View {
-    let section: Section
-    let viewModel: CourseViewModel
-    @Binding var scrollToLessonId: String?
-    let onLessonTap: (Lesson) -> Void
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: .spacingL) {
-            // Section Header
-            SectionHeader(section: section)
-                .id("header-\(section.id)")
-            
-            // Lesson Pills
-            VStack(spacing: .spacingM) {
-                ForEach(section.lessons) { lesson in
-                    let status = viewModel.getLessonStatus(lesson)
-                    let isNextLesson = viewModel.getNextAvailableLesson()?.id == lesson.id
-                    
-                    Button(action: {
-                        if status != .locked {
-                            onLessonTap(lesson)
-                        }
-                    }) {
-                        LessonPill(
-                            lesson: lesson,
-                            status: status,
-                            isNextLesson: isNextLesson
-                        )
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(LessonPillButtonStyle())
-                    .disabled(status == .locked)
-                    .id(lesson.id)
-                }
             }
         }
     }
