@@ -70,6 +70,7 @@ struct LessonView: View {
                                     isCorrect: viewModel.selectedAnswerId == viewModel.currentQuestion.correctAnswerId,
                                     onContinue: handleContinue
                                 )
+                                .transition(.move(edge: .bottom))
                             }
                         }
                     }
