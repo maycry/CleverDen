@@ -19,7 +19,8 @@ struct SectionHeader: View {
             Text(section.title)
                 .font(.headlineLarge)
                 .foregroundColor(.textPrimary)
-                .multilineTextAlignment(.center)
+                .lineLimit(1)
+                .truncationMode(.tail)
         }
         .frame(maxWidth: .infinity)
         .padding(.cardPadding)

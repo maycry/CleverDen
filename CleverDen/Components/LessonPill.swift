@@ -15,11 +15,11 @@ struct LessonPill: View {
     
     var body: some View {
         VStack(spacing: .spacingS) {
-            // Main circle/icon
+            // Main pill/icon
             ZStack {
-                Circle()
+                Capsule()
                     .fill(backgroundColor)
-                    .frame(width: circleSize, height: circleSize)
+                    .frame(width: pillShapeWidth, height: pillShapeHeight)
                     .shadowSubtle()
                     .scaleEffect(pulseScale)
                 
@@ -88,15 +88,19 @@ struct LessonPill: View {
         }
     }
     
-    private var circleSize: CGFloat {
-        isNextLesson ? 120 : 100
+    private var pillShapeWidth: CGFloat {
+        isNextLesson ? 100 * 1.1 : 100
+    }
+    
+    private var pillShapeHeight: CGFloat {
+        isNextLesson ? 128 * 1.1 : 128
     }
     
     private var iconSize: CGFloat {
-        isNextLesson ? 48 : 40
+        isNextLesson ? 40 * 1.1 : 40
     }
     
     private var pillWidth: CGFloat {
-        isNextLesson ? 140 : 120
+        140
     }
 }

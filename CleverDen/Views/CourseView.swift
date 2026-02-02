@@ -32,31 +32,16 @@ struct CourseView: View {
                         LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
                             ForEach(viewModel.sections) { section in
                                 SwiftUI.Section {
-                                    // Lesson Pills
-                                    VStack(spacing: .spacingM) {
-                                        ForEach(section.lessons) { lesson in
-                                            let status = viewModel.getLessonStatus(lesson)
-                                            let isNextLesson = viewModel.getNextAvailableLesson()?.id == lesson.id
-                                            
-                                            Button(action: {
-                                                if status != .locked {
-                                                    selectedLessonItem = LessonNavigationItem(id: lesson.id, lesson: lesson)
-                                                }
-                                            }) {
-                                                LessonPill(
-                                                    lesson: lesson,
-                                                    status: status,
-                                                    isNextLesson: isNextLesson
-                                                )
-                                                .contentShape(Rectangle())
-                                            }
-                                            .buttonStyle(LessonPillButtonStyle())
-                                            .disabled(status == .locked)
-                                            .id(lesson.id)
+                                    // Lesson Pills in Zig-Zag Layout
+                                    ZigZagLessonsLayout(
+                                        lessons: section.lessons,
+                                        viewModel: viewModel,
+                                        onLessonTap: { lesson in
+                                            selectedLessonItem = LessonNavigationItem(id: lesson.id, lesson: lesson)
                                         }
-                                    }
+                                    )
                                     .padding(.top, .spacingXL)
-                                    .padding(.horizontal, .screenPadding)
+                                    .padding(.horizontal, .screenPaddingXL)
                                     .padding(.bottom, .spacingXL)
                                 } header: {
                                     SectionHeader(section: section)
@@ -66,8 +51,8 @@ struct CourseView: View {
                                 .id(section.id)
                             }
                         }
-                        .padding(.top, .spacingXXL + .spacingXXL + 10) // Space for top nav bar
-                        .padding(.bottom, 100) // Space for floating nav bar
+                    
+                
                     }
                     .onChange(of: scrollToLessonId) { oldValue, newValue in
                         if let lessonId = newValue {
@@ -129,6 +114,50 @@ struct CourseView: View {
         }
     }
     
+}
+
+// Zig-Zag layout for lessons
+struct ZigZagLessonsLayout: View {
+    let lessons: [Lesson]
+    let viewModel: CourseViewModel
+    let onLessonTap: (Lesson) -> Void
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            ForEach(Array(lessons.enumerated()), id: \.element.id) { index, lesson in
+                let status = viewModel.getLessonStatus(lesson)
+                let isNextLesson = viewModel.getNextAvailableLesson()?.id == lesson.id
+                let isEven = index % 2 == 0
+                
+                HStack {
+                    if !isEven {
+                        Spacer()
+                    }
+                    
+                    Button(action: {
+                        if status != .locked {
+                            onLessonTap(lesson)
+                        }
+                    }) {
+                        LessonPill(
+                            lesson: lesson,
+                            status: status,
+                            isNextLesson: isNextLesson
+                        )
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(LessonPillButtonStyle())
+                    .disabled(status == .locked)
+                    .id(lesson.id)
+                    
+                    if isEven {
+                        Spacer()
+                    }
+                }
+                
+            }
+        }
+    }
 }
 
 // Wrapper view that manages the transition from LessonView to LessonCompleteView

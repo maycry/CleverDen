@@ -19,7 +19,8 @@ extension CGFloat {
     
     // MARK: - Screen Padding
     static let screenPadding: CGFloat = 24
-    static let screenPaddingLarge: CGFloat = 32
+    static let screenPaddingL: CGFloat = 32
+    static let screenPaddingXL: CGFloat = 64
     
     // MARK: - Component Padding
     static let cardPadding: CGFloat = 16
