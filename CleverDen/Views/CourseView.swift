@@ -55,6 +55,7 @@ struct CourseView: View {
                                             .id(lesson.id)
                                         }
                                     }
+                                    .padding(.top, .spacingXL)
                                     .padding(.horizontal, .screenPadding)
                                     .padding(.bottom, .spacingXL)
                                 } header: {
@@ -74,11 +75,11 @@ struct CourseView: View {
                         }
                     }
                 }
-                .overlay(alignment: .top) {
-                    TopNavigationBar(coins: viewModel.userProgress.coins)
-                }
                 .overlay(alignment: .bottom) {
                     FloatingNavBar(selectedTab: $selectedTab)
+                }
+                .overlay(alignment: .top) {
+                    TopNavigationBar(coins: viewModel.userProgress.coins)
                 }
             } else {
                 ProfileView(userProgress: viewModel.userProgress)

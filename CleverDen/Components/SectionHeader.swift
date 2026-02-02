@@ -11,22 +11,19 @@ struct SectionHeader: View {
     let section: Section
     
     var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: .spacingXS) {
-                Text("Section \(section.number)")
-                    .font(.label)
-                    .foregroundColor(.textSecondary)
-                
-                Text(section.title)
-                    .font(.headlineLarge)
-                    .foregroundColor(.textPrimary)
-            }
+        VStack(spacing: .spacingXS) {
+            Text("Section \(section.number)")
+                .font(.label)
+                .foregroundColor(.textSecondary)
             
-            Spacer()
+            Text(section.title)
+                .font(.headlineLarge)
+                .foregroundColor(.textPrimary)
+                .multilineTextAlignment(.center)
         }
+        .frame(maxWidth: .infinity)
         .padding(.cardPadding)
         .background(Color.backgroundPrimary)
-        .cornerRadius(.radiusLarge)
-        .shadowMedium()
+        .cornerRadius(.radiusFull)
     }
 }

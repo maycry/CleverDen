@@ -31,7 +31,7 @@ struct TopNavigationBar: View {
             }
         }
         .padding(.horizontal, .screenPadding)
-        .padding(.vertical, .spacingM)
+        .frame(height: 64)
         .background(Color.backgroundSecondary)
     }
 }
