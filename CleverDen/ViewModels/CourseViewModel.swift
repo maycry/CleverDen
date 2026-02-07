@@ -10,18 +10,21 @@ import Observation
 
 @Observable
 class CourseViewModel {
+    let course: Course
     var sections: [Section] = []
     var userProgress: UserProgress
     private let persistenceService: PersistenceService
     
-    init(persistenceService: PersistenceService = PersistenceService()) {
+    init(course: Course, userProgress: UserProgress, persistenceService: PersistenceService = PersistenceService()) {
+        self.course = course
+        self.userProgress = userProgress
         self.persistenceService = persistenceService
-        self.userProgress = persistenceService.loadProgress()
         loadSections()
     }
     
     private func loadSections() {
-        sections = SampleData.createSections()
+        // Filter sections to only show those belonging to this course
+        sections = course.sections.filter { $0.courseId == course.id }
     }
     
     func getAllLessons() -> [Lesson] {

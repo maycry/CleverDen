@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Lesson: Identifiable, Codable {
+struct Lesson: Identifiable, Codable, Hashable {
     let id: String
     let title: String
     let sectionId: String

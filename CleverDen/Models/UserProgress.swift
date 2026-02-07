@@ -44,4 +44,15 @@ class UserProgress {
         
         return .locked
     }
+    
+    func getCompletedSectionsCount(for courseId: String, allSections: [Section]) -> Int {
+        let courseSections = allSections.filter { $0.courseId == courseId }
+        
+        return courseSections.filter { section in
+            // A section is completed if all its lessons are completed
+            section.lessons.allSatisfy { lesson in
+                completedLessons[lesson.id] != nil
+            }
+        }.count
+    }
 }

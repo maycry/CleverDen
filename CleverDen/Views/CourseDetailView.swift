@@ -1,5 +1,5 @@
 //
-//  CourseView.swift
+//  CourseDetailView.swift
 //  CleverDen
 //
 //  Created by Iurii Tanskyi on 1/25/26.
@@ -12,13 +12,22 @@ struct LessonNavigationItem: Identifiable {
     let lesson: Lesson
 }
 
-struct CourseView: View {
-    @State private var viewModel = CourseViewModel()
+struct CourseDetailView: View {
+    let course: Course
+    @Binding var userProgress: UserProgress
+    @State private var viewModel: CourseViewModel
     @State private var selectedTab: FloatingNavBar.Tab = .home
     @State private var scrollOffset: CGFloat = 0
     @State private var currentSectionId: String?
     @State private var scrollToLessonId: String?
     @State private var selectedLessonItem: LessonNavigationItem?
+    @Environment(\.dismiss) private var dismiss
+    
+    init(course: Course, userProgress: Binding<UserProgress>) {
+        self.course = course
+        self._userProgress = userProgress
+        self._viewModel = State(initialValue: CourseViewModel(course: course, userProgress: userProgress.wrappedValue))
+    }
     
     var body: some View {
         ZStack {
@@ -64,7 +73,46 @@ struct CourseView: View {
                     FloatingNavBar(selectedTab: $selectedTab)
                 }
                 .overlay(alignment: .top) {
-                    TopNavigationBar(coins: viewModel.userProgress.coins)
+                    // Custom header with back button, course title, and coins
+                    ZStack {
+                        // Title - truly centered
+                        Text(course.title)
+                            .font(.headlineMedium)
+                            .foregroundColor(.textPrimary)
+                        
+                        // Left and right elements
+                        HStack {
+                            // Back button with grid icon
+                            Button(action: {
+                                dismiss()
+                            }) {
+                                Image(systemName: "square.grid.2x2")
+                                    .font(.system(size: 24, weight: .regular))
+                                    .foregroundColor(.textSecondary)
+                                    .frame(width: 44, height: 44)
+                            }
+                            
+                            Spacer()
+                            
+                            // Coins display
+                            HStack(spacing: .spacingXS) {
+                                Text("\(viewModel.userProgress.coins)")
+                                    .font(.bodyLarge)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.textPrimary)
+                                
+                                Image(systemName: "diamond.fill")
+                                    .font(.system(size: 20))
+                                    .foregroundColor(.accentGold)
+                            }
+                        }
+                    }
+                    .padding(.horizontal, .screenPadding)
+                    .padding(.bottom, .spacingM)
+                    .background(
+                        Color.backgroundSecondary
+                            .ignoresSafeArea(edges: .top)
+                    )
                 }
             } else {
                 ProfileView(userProgress: viewModel.userProgress)

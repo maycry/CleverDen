@@ -8,70 +8,132 @@
 import Foundation
 
 struct SampleData {
-    static func createSections() -> [Section] {
+    static func createCourses() -> [Course] {
         return [
-            createSection1(),
-            createSection2(),
-            createSection3()
+            createFlagsCourse(),
+            createContinentsCourse(),
+            createUnitedStatesCourse(),
+            createCapitalsCourse()
         ]
     }
     
-    private static func createSection1() -> Section {
-        let lessons = (1...10).map { lessonNumber in
-            createLesson(
-                id: "section1-lesson\(lessonNumber)",
-                title: lessonNumber <= 5 ? "Continents p. \(lessonNumber)" : "Europe flags p. \(lessonNumber - 5)",
-                sectionId: "section1",
-                order: lessonNumber,
-                iconName: lessonNumber <= 5 ? "globe" : "flag",
-                questionCount: 6
+    // MARK: - Flags Course (8 sections)
+    private static func createFlagsCourse() -> Course {
+        let sections = (1...8).map { sectionNumber in
+            createSection(
+                id: "flags-section\(sectionNumber)",
+                courseId: "flags",
+                number: sectionNumber,
+                title: "Flags Section \(sectionNumber)",
+                lessonPrefix: "Flags",
+                iconName: "flag"
             )
         }
         
-        return Section(
-            id: "section1",
-            number: 1,
+        return Course(
+            id: "flags",
+            title: "Flags",
+            subtitle: "Starting learning flags of the world.",
+            iconName: "flag.fill",
+            color: "FF5A35",
+            sections: sections
+        )
+    }
+    
+    // MARK: - Continents Course (3 sections)
+    private static func createContinentsCourse() -> Course {
+        let sections = (1...3).map { sectionNumber in
+            createSection(
+                id: "continents-section\(sectionNumber)",
+                courseId: "continents",
+                number: sectionNumber,
+                title: "Continents Section \(sectionNumber)",
+                lessonPrefix: "Continents",
+                iconName: "globe"
+            )
+        }
+        
+        return Course(
+            id: "continents",
             title: "Continents",
-            lessons: lessons
+            subtitle: "Learn the continents of the world.",
+            iconName: "globe",
+            color: "FFFFFF",
+            sections: sections
         )
     }
     
-    private static func createSection2() -> Section {
+    // MARK: - United States Course (5 sections)
+    private static func createUnitedStatesCourse() -> Course {
+        let sections = (1...5).map { sectionNumber in
+            createSection(
+                id: "united-states-section\(sectionNumber)",
+                courseId: "united-states",
+                number: sectionNumber,
+                title: "United States Section \(sectionNumber)",
+                lessonPrefix: "US States",
+                iconName: "flag"
+            )
+        }
+        
+        return Course(
+            id: "united-states",
+            title: "United States",
+            subtitle: "Learn the states of the USA.",
+            iconName: "flag.fill",
+            color: "F8C429",
+            sections: sections
+        )
+    }
+    
+    // MARK: - Capitals Course (6 sections)
+    private static func createCapitalsCourse() -> Course {
+        let sections = (1...6).map { sectionNumber in
+            createSection(
+                id: "capitals-section\(sectionNumber)",
+                courseId: "capitals",
+                number: sectionNumber,
+                title: "Capitals Section \(sectionNumber)",
+                lessonPrefix: "Capitals",
+                iconName: "building.2"
+            )
+        }
+        
+        return Course(
+            id: "capitals",
+            title: "Capitals",
+            subtitle: "Learn the capitals of the world.",
+            iconName: "building.2.fill",
+            color: "FF9D57",
+            sections: sections
+        )
+    }
+    
+    // MARK: - Section Helper
+    private static func createSection(
+        id: String,
+        courseId: String,
+        number: Int,
+        title: String,
+        lessonPrefix: String,
+        iconName: String
+    ) -> Section {
         let lessons = (1...10).map { lessonNumber in
             createLesson(
-                id: "section2-lesson\(lessonNumber)",
-                title: lessonNumber <= 5 ? "North America flags p. \(lessonNumber)" : "South America flags p. \(lessonNumber - 5)",
-                sectionId: "section2",
+                id: "\(id)-lesson\(lessonNumber)",
+                title: "\(lessonPrefix) p. \(lessonNumber)",
+                sectionId: id,
                 order: lessonNumber,
-                iconName: "flag",
+                iconName: iconName,
                 questionCount: 6
             )
         }
         
         return Section(
-            id: "section2",
-            number: 2,
-            title: "North and South America",
-            lessons: lessons
-        )
-    }
-    
-    private static func createSection3() -> Section {
-        let lessons = (1...10).map { lessonNumber in
-            createLesson(
-                id: "section3-lesson\(lessonNumber)",
-                title: lessonNumber <= 5 ? "Europe flags p. \(lessonNumber)" : "Asia flags p. \(lessonNumber - 5)",
-                sectionId: "section3",
-                order: lessonNumber,
-                iconName: "flag",
-                questionCount: 6
-            )
-        }
-        
-        return Section(
-            id: "section3",
-            number: 3,
-            title: "Europe and Asia",
+            id: id,
+            courseId: courseId,
+            number: number,
+            title: title,
             lessons: lessons
         )
     }

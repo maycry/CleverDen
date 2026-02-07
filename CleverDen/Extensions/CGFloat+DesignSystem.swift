@@ -27,6 +27,11 @@ extension CGFloat {
     static let buttonPaddingV: CGFloat = 16
     static let buttonPaddingH: CGFloat = 32
     
+    // MARK: - Tile Padding
+    static let tilePadding: CGFloat = 24
+    static let tileInnerPaddingV: CGFloat = 24
+    static let tileInnerPaddingH: CGFloat = 28
+    
     // MARK: - Grid Spacing
     static let gridGap: CGFloat = 12
     static let gridGapLarge: CGFloat = 20
@@ -37,5 +42,6 @@ extension CGFloat {
     static let radiusCard: CGFloat = 14
     static let radiusLarge: CGFloat = 20
     static let radiusXL: CGFloat = 24
+    static let radiusTile: CGFloat = 34
     static let radiusFull: CGFloat = 999
 }

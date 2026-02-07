@@ -20,6 +20,11 @@ extension Color {
     static let accentGold = Color(hex: "#FFB73B")
     static let accentGoldAlt = Color(hex: "#FF7D35")
     
+    // MARK: - Tile Colors
+    static let tilePrimary = Color(hex: "#FF5A35")
+    static let tileYellow = Color(hex: "#F8C429")
+    static let tileOrange = Color(hex: "#FF9D57")
+    
     // MARK: - Text Colors
     static let textPrimary = Color(hex: "#1D1D1D")
     static let textSecondary = Color(hex: "#5E5E5E")

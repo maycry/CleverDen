@@ -11,7 +11,9 @@ import SwiftUI
 struct CleverDenApp: App {
     var body: some Scene {
         WindowGroup {
-            CourseView()
+            NavigationStack {
+                CoursesListView()
+            }
         }
     }
 }
