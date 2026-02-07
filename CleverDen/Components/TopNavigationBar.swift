@@ -13,9 +13,7 @@ struct TopNavigationBar: View {
     var body: some View {
         HStack {
             // Fox logo
-            Image(systemName: "pawprint.fill")
-                .font(.system(size: 24))
-                .foregroundColor(.accentOrange)
+            Image("foxLogo")
             
             Spacer()
             
@@ -29,6 +27,12 @@ struct TopNavigationBar: View {
                     .font(.system(size: 16))
                     .foregroundColor(.accentGold)
             }
+            .padding(.horizontal, .spacingXS)
+            .padding(.vertical, .spacingXS / 2)
+            .background(.white)
+            .clipShape(Capsule())
+            .shadowSubtle()
+
         }
         .padding(.horizontal, .screenPadding)
         .frame(height: 64)

@@ -18,9 +18,7 @@ struct ProfileView: View {
             VStack(spacing: .spacingXL) {
                 // Profile header
                 VStack(spacing: .spacingM) {
-                    Image(systemName: "pawprint.fill")
-                        .font(.system(size: 60))
-                        .foregroundColor(.accentOrange)
+                    Image("foxLogo")
                     
                     Text("Profile")
                         .font(.headlineLarge)
