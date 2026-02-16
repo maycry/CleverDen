@@ -15,34 +15,39 @@ struct MultipleChoiceStepView: View {
             // Prompt — always visible
             promptSection
             
-            if viewModel.showGlobe, let countryName = step.countryName {
-                // Globe replaces options after check
-                ZStack {
-                    Globe3DView(countryName: countryName)
-                        .frame(height: 300)
-                    
-                    // Tooltip
-                    VStack {
-                        Text(countryName)
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundColor(.textOnAccent)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(
-                                Capsule()
-                                    .fill(Color.accentOrange)
-                            )
-                        Spacer()
-                    }
-                    .padding(.top, 12)
+            ZStack {
+                // Options Grid — hide after check with globe
+                if !viewModel.showGlobe || step.countryName == nil {
+                    optionsGrid
+                        .padding(.horizontal, .screenPadding)
                 }
-                .frame(height: 300)
-                .padding(.horizontal, .screenPadding)
-                .transition(.opacity)
-            } else {
-                // Options Grid
-                optionsGrid
+                
+                // Globe — always in hierarchy when countryName exists, just hidden until check
+                if let countryName = step.countryName {
+                    ZStack {
+                        Globe3DView(countryName: countryName)
+                            .frame(height: 300)
+                        
+                        // Tooltip
+                        VStack {
+                            Text(countryName)
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundColor(.textOnAccent)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 8)
+                                .background(
+                                    Capsule()
+                                        .fill(Color.accentOrange)
+                                )
+                            Spacer()
+                        }
+                        .padding(.top, 12)
+                    }
+                    .frame(height: 300)
                     .padding(.horizontal, .screenPadding)
+                    .opacity(viewModel.showGlobe ? 1 : 0)
+                    .allowsHitTesting(false)
+                }
             }
         }
     }
