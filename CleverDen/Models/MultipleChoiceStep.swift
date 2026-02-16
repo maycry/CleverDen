@@ -28,4 +28,5 @@ struct MultipleChoiceStep: Identifiable, Codable, Hashable {
     let promptImage: String?
     let options: [MCOption]
     let correctOptionId: String
+    let countryName: String?
 }

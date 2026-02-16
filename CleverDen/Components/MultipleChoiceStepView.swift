@@ -12,12 +12,21 @@ struct MultipleChoiceStepView: View {
     
     var body: some View {
         VStack(spacing: .spacingXL) {
-            // Prompt
+            // Prompt — always visible
             promptSection
             
-            // Options Grid
-            optionsGrid
-                .padding(.horizontal, .screenPadding)
+            if viewModel.showGlobe, let countryName = step.countryName {
+                // Globe replaces options after check
+                Globe3DView(countryName: countryName)
+                    .frame(height: 250)
+                    .clipShape(RoundedRectangle(cornerRadius: .radiusCard))
+                    .padding(.horizontal, .screenPadding)
+                    .transition(.opacity)
+            } else {
+                // Options Grid
+                optionsGrid
+                    .padding(.horizontal, .screenPadding)
+            }
         }
     }
     
@@ -60,7 +69,6 @@ struct MultipleChoiceStepView: View {
         
         switch step.variant {
         case .countryToFlag:
-            // Show large emoji flags as options
             AnswerCard(
                 text: option.image ?? option.displayText,
                 isSelected: isSelected,
@@ -68,7 +76,6 @@ struct MultipleChoiceStepView: View {
                 isEmoji: true
             )
         default:
-            // Text options
             AnswerCard(
                 text: option.displayText,
                 isSelected: isSelected,

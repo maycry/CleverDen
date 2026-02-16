@@ -72,6 +72,7 @@ struct LessonView: View {
         }
         .animation(.easeInOut(duration: 0.35), value: questionTransitionId)
         .animation(.spring(response: 0.3, dampingFraction: 0.8), value: showFeedbackSheet)
+        .animation(.spring(response: 0.3, dampingFraction: 0.8), value: viewModel.showGlobe)
         .onChange(of: viewModel.feedbackMode) { _, newMode in
             showFeedbackSheet = newMode != nil
         }
@@ -95,18 +96,22 @@ struct LessonView: View {
     }
     
     private func handleMCAnswerTap(optionId: String) {
-        guard !viewModel.isStepComplete else { return }
+        guard !viewModel.isAnswerChecked else { return }
         viewModel.selectOption(optionId)
-        viewModel.submitOption()
     }
     
     private func handleFeedbackAction() {
         guard let mode = viewModel.feedbackMode else { return }
         
         switch mode {
+        case .pendingCheck:
+            // User tapped "Check" — evaluate the answer
+            viewModel.checkAnswer()
+            
         case .incorrectRetry:
             viewModel.retryMatchPairs()
             showFeedbackSheet = false
+            
         case .correct, .incorrectFinal:
             if viewModel.isLastStep {
                 onComplete(viewModel.totalErrors)

@@ -18,6 +18,8 @@ class LessonViewModel {
     
     // MARK: - Multiple Choice State
     private(set) var selectedOptionId: String?
+    private(set) var isAnswerChecked: Bool = false  // true after "Check" is tapped
+    private(set) var showGlobe: Bool = false
     
     // MARK: - Match Pairs State
     private(set) var selectedLeftId: String?
@@ -49,25 +51,34 @@ class LessonViewModel {
     // MARK: - Multiple Choice
     
     func selectOption(_ optionId: String) {
-        guard case .multipleChoice = currentStep, !isStepComplete else { return }
+        guard case .multipleChoice = currentStep,
+              !isAnswerChecked else { return }
         selectedOptionId = optionId
+        feedbackMode = .pendingCheck
     }
     
-    func submitOption() {
+    /// Called when user taps "Check" — evaluates the answer
+    func checkAnswer() {
         guard case .multipleChoice(let step) = currentStep,
               let selectedId = selectedOptionId,
-              !isStepComplete else { return }
+              !isAnswerChecked else { return }
         
+        isAnswerChecked = true
         isStepComplete = true
         let correct = selectedId == step.correctOptionId
         if !correct {
             totalErrors += 1
         }
         feedbackMode = correct ? .correct : .incorrectFinal
+        
+        // Show globe if country available
+        if step.countryName != nil {
+            showGlobe = true
+        }
     }
     
     func isMCOptionCorrect(_ optionId: String) -> Bool? {
-        guard case .multipleChoice(let step) = currentStep, isStepComplete else { return nil }
+        guard case .multipleChoice(let step) = currentStep, isAnswerChecked else { return nil }
         if optionId == step.correctOptionId { return true }
         if optionId == selectedOptionId { return false }
         return nil
@@ -88,14 +99,12 @@ class LessonViewModel {
         switch column {
         case .left:
             if selectedRightId != nil {
-                // We have a right selected, this completes a guess
                 checkMatch(leftId: id, rightId: selectedRightId!)
             } else {
                 selectedLeftId = id
             }
         case .right:
             if selectedLeftId != nil {
-                // We have a left selected, this completes a guess
                 checkMatch(leftId: selectedLeftId!, rightId: id)
             } else {
                 selectedRightId = id
@@ -117,7 +126,6 @@ class LessonViewModel {
             matchedPairIds.insert(leftId)
             matchedPairIds.insert(rightId)
             
-            // Check if all pairs matched
             if matchedPairIds.count == step.pairs.count * 2 {
                 isStepComplete = true
                 feedbackMode = .correct
@@ -163,6 +171,8 @@ class LessonViewModel {
         isStepComplete = false
         feedbackMode = nil
         selectedOptionId = nil
+        isAnswerChecked = false
+        showGlobe = false
         selectedLeftId = nil
         selectedRightId = nil
         matchedPairIds = []

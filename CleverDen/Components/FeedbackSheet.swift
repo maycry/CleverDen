@@ -8,15 +8,18 @@
 import SwiftUI
 import UIKit
 
-enum FeedbackMode {
+enum FeedbackMode: Equatable {
+    case pendingCheck
     case correct
     case incorrectRetry
     case incorrectFinal
     
     var isCorrect: Bool { self == .correct }
+    var isChecked: Bool { self != .pendingCheck }
     
     var title: String {
         switch self {
+        case .pendingCheck: return ""
         case .correct: return "Correct"
         case .incorrectRetry, .incorrectFinal: return "Incorrect"
         }
@@ -24,6 +27,7 @@ enum FeedbackMode {
     
     var buttonTitle: String {
         switch self {
+        case .pendingCheck: return "Check"
         case .correct, .incorrectFinal: return "Continue"
         case .incorrectRetry: return "Try Again"
         }
@@ -55,21 +59,25 @@ struct FeedbackSheet: View {
     
     var body: some View {
         VStack(spacing: .spacingL) {
-            // Feedback content
-            HStack(spacing: .spacingM) {
-                Image(systemName: mode.iconName)
-                    .font(.system(size: 24))
-                    .foregroundColor(mode.color)
-                
-                Text(mode.title)
-                    .font(.bodyLarge)
-                    .foregroundColor(mode.color)
+            // Result label — only visible after check
+            if mode.isChecked {
+                HStack(spacing: .spacingM) {
+                    Image(systemName: mode.iconName)
+                        .font(.system(size: 24))
+                        .foregroundColor(mode.color)
+                    
+                    Text(mode.title)
+                        .font(.bodyLarge)
+                        .foregroundColor(mode.color)
+                }
+                .padding(.top, .spacingXL)
+                .transition(.opacity.combined(with: .move(edge: .top)))
             }
-            .padding(.top, .spacingXL)
             
-            // Action button
+            // Button — always at bottom
             PrimaryButton(title: mode.buttonTitle, action: onAction)
                 .padding(.horizontal, .screenPadding)
+                .padding(.top, mode.isChecked ? 0 : .spacingXL)
                 .padding(.bottom, .spacingXL)
         }
         .frame(maxWidth: .infinity)
@@ -79,6 +87,7 @@ struct FeedbackSheet: View {
                 .ignoresSafeArea(edges: .bottom)
         )
         .shadowMedium()
+        .animation(.spring(response: 0.3, dampingFraction: 0.8), value: mode)
     }
 }
 

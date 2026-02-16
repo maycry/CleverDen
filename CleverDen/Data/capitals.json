@@ -21,6 +21,7 @@
               "id": "capitals-s1-l1-q1",
               "variant": "textOnly",
               "prompt": "What is the capital of France?",
+              "countryName": "France",
               "options": [
                 {"id": "a1", "text": "Lyon"},
                 {"id": "a2", "text": "Paris"},
@@ -34,6 +35,7 @@
               "id": "capitals-s1-l1-q2",
               "variant": "textOnly",
               "prompt": "What is the capital of Germany?",
+              "countryName": "Germany",
               "options": [
                 {"id": "a1", "text": "Munich"},
                 {"id": "a2", "text": "Hamburg"},
@@ -47,6 +49,7 @@
               "id": "capitals-s1-l1-q3",
               "variant": "textOnly",
               "prompt": "What is the capital of Spain?",
+              "countryName": "Spain",
               "options": [
                 {"id": "a1", "text": "Barcelona"},
                 {"id": "a2", "text": "Madrid"},
@@ -60,6 +63,7 @@
               "id": "capitals-s1-l1-q4",
               "variant": "textOnly",
               "prompt": "What is the capital of Italy?",
+              "countryName": "Italy",
               "options": [
                 {"id": "a1", "text": "Milan"},
                 {"id": "a2", "text": "Venice"},

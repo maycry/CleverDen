@@ -22,6 +22,7 @@
               "variant": "flagToCountry",
               "prompt": "Which country does this flag belong to?",
               "promptImage": "🇫🇷",
+              "countryName": "France",
               "options": [
                 {"id": "a1", "text": "France"},
                 {"id": "a2", "text": "Italy"},
@@ -36,6 +37,7 @@
               "variant": "flagToCountry",
               "prompt": "Which country does this flag belong to?",
               "promptImage": "🇩🇪",
+              "countryName": "Germany",
               "options": [
                 {"id": "a1", "text": "Austria"},
                 {"id": "a2", "text": "Germany"},
@@ -49,6 +51,7 @@
               "id": "flags-s1-l1-q3",
               "variant": "countryToFlag",
               "prompt": "Select the flag of Spain",
+              "countryName": "Spain",
               "options": [
                 {"id": "a1", "image": "🇵🇹"},
                 {"id": "a2", "image": "🇲🇽"},
@@ -63,6 +66,7 @@
               "variant": "flagToCountry",
               "prompt": "Which country does this flag belong to?",
               "promptImage": "🇮🇹",
+              "countryName": "Italy",
               "options": [
                 {"id": "a1", "text": "Ireland"},
                 {"id": "a2", "text": "Italy"},
@@ -76,6 +80,7 @@
               "id": "flags-s1-l1-q5",
               "variant": "countryToFlag",
               "prompt": "Select the flag of the United Kingdom",
+              "countryName": "United Kingdom",
               "options": [
                 {"id": "a1", "image": "🇦🇺"},
                 {"id": "a2", "image": "🇳🇿"},
@@ -108,6 +113,7 @@
               "variant": "flagToCountry",
               "prompt": "Which country does this flag belong to?",
               "promptImage": "🇳🇱",
+              "countryName": "Netherlands",
               "options": [
                 {"id": "a1", "text": "Luxembourg"},
                 {"id": "a2", "text": "Netherlands"},
@@ -121,6 +127,7 @@
               "id": "flags-s1-l2-q2",
               "variant": "countryToFlag",
               "prompt": "Select the flag of Belgium",
+              "countryName": "Belgium",
               "options": [
                 {"id": "a1", "image": "🇧🇪"},
                 {"id": "a2", "image": "🇩🇪"},
@@ -135,6 +142,7 @@
               "variant": "flagToCountry",
               "prompt": "Which country does this flag belong to?",
               "promptImage": "🇨🇭",
+              "countryName": "Switzerland",
               "options": [
                 {"id": "a1", "text": "Denmark"},
                 {"id": "a2", "text": "Austria"},
@@ -148,6 +156,7 @@
               "id": "flags-s1-l2-q4",
               "variant": "countryToFlag",
               "prompt": "Select the flag of Austria",
+              "countryName": "Austria",
               "options": [
                 {"id": "a1", "image": "🇱🇻"},
                 {"id": "a2", "image": "🇦🇹"},
@@ -162,6 +171,7 @@
               "variant": "flagToCountry",
               "prompt": "Which country does this flag belong to?",
               "promptImage": "🇮🇪",
+              "countryName": "Ireland",
               "options": [
                 {"id": "a1", "text": "Ivory Coast"},
                 {"id": "a2", "text": "Italy"},
