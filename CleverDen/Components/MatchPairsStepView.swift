@@ -72,7 +72,8 @@ struct MatchPairsStepView: View {
                         .multilineTextAlignment(.center)
                 }
             }
-            .frame(height: 64)
+            .frame(height: 72)
+            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: state)
         }
         .disabled(state == .matched)
     }

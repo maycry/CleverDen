@@ -196,6 +196,6 @@ enum MatchColumn {
     case left, right
 }
 
-enum MatchItemState {
+enum MatchItemState: Equatable {
     case idle, selected, matched, wrong
 }
