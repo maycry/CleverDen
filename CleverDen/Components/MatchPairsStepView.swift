@@ -30,14 +30,14 @@ struct MatchPairsStepView: View {
             
             HStack(spacing: .spacingM) {
                 // Left column
-                VStack(spacing: .spacingS) {
+                VStack(spacing: .spacingM) {
                     ForEach(shuffledLeft, id: \.self) { item in
                         matchItem(text: item, column: .left)
                     }
                 }
                 
                 // Right column
-                VStack(spacing: .spacingS) {
+                VStack(spacing: .spacingM) {
                     ForEach(shuffledRight, id: \.self) { item in
                         matchItem(text: item, column: .right)
                     }
@@ -72,7 +72,7 @@ struct MatchPairsStepView: View {
                         .multilineTextAlignment(.center)
                 }
             }
-            .frame(height: 56)
+            .frame(height: 64)
         }
         .disabled(state == .matched)
     }
@@ -80,18 +80,16 @@ struct MatchPairsStepView: View {
     private func matchItemColor(_ state: MatchItemState) -> Color {
         switch state {
         case .idle: return .cardBackground
-        case .selected: return .accentBlue.opacity(0.3)
-        case .matched: return .accentGreen.opacity(0.3)
-        case .wrong: return .accentOrange.opacity(0.3)
+        case .selected: return .accentGreen
+        case .matched: return .accentGreen
+        case .wrong: return .accentOrange
         }
     }
     
     private func matchItemTextColor(_ state: MatchItemState) -> Color {
         switch state {
         case .idle: return .textPrimary
-        case .selected: return .accentBlue
-        case .matched: return .accentGreen
-        case .wrong: return .accentOrange
+        case .selected, .matched, .wrong: return .textOnAccent
         }
     }
     
