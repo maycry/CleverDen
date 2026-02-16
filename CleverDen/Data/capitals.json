@@ -1,0 +1,96 @@
+{
+  "id": "capitals",
+  "title": "Capitals",
+  "subtitle": "Learn the capitals of the world.",
+  "iconName": "building.2.fill",
+  "color": "FF9D57",
+  "sections": [
+    {
+      "id": "capitals-s1",
+      "number": 1,
+      "title": "European Capitals",
+      "lessons": [
+        {
+          "id": "capitals-s1-l1",
+          "title": "European Capitals p.1",
+          "order": 1,
+          "iconName": "building.2",
+          "questions": [
+            {
+              "id": "capitals-s1-l1-q1",
+              "text": "What is the capital of France?",
+              "imageAsset": null,
+              "answers": [
+                {"id": "capitals-s1-l1-q1-a1", "text": "Lyon"},
+                {"id": "capitals-s1-l1-q1-a2", "text": "Paris"},
+                {"id": "capitals-s1-l1-q1-a3", "text": "Marseille"},
+                {"id": "capitals-s1-l1-q1-a4", "text": "Nice"}
+              ],
+              "correctAnswerId": "capitals-s1-l1-q1-a2"
+            },
+            {
+              "id": "capitals-s1-l1-q2",
+              "text": "What is the capital of Germany?",
+              "imageAsset": null,
+              "answers": [
+                {"id": "capitals-s1-l1-q2-a1", "text": "Munich"},
+                {"id": "capitals-s1-l1-q2-a2", "text": "Hamburg"},
+                {"id": "capitals-s1-l1-q2-a3", "text": "Berlin"},
+                {"id": "capitals-s1-l1-q2-a4", "text": "Frankfurt"}
+              ],
+              "correctAnswerId": "capitals-s1-l1-q2-a3"
+            },
+            {
+              "id": "capitals-s1-l1-q3",
+              "text": "What is the capital of Spain?",
+              "imageAsset": null,
+              "answers": [
+                {"id": "capitals-s1-l1-q3-a1", "text": "Barcelona"},
+                {"id": "capitals-s1-l1-q3-a2", "text": "Madrid"},
+                {"id": "capitals-s1-l1-q3-a3", "text": "Seville"},
+                {"id": "capitals-s1-l1-q3-a4", "text": "Valencia"}
+              ],
+              "correctAnswerId": "capitals-s1-l1-q3-a2"
+            },
+            {
+              "id": "capitals-s1-l1-q4",
+              "text": "What is the capital of Italy?",
+              "imageAsset": null,
+              "answers": [
+                {"id": "capitals-s1-l1-q4-a1", "text": "Milan"},
+                {"id": "capitals-s1-l1-q4-a2", "text": "Venice"},
+                {"id": "capitals-s1-l1-q4-a3", "text": "Rome"},
+                {"id": "capitals-s1-l1-q4-a4", "text": "Naples"}
+              ],
+              "correctAnswerId": "capitals-s1-l1-q4-a3"
+            },
+            {
+              "id": "capitals-s1-l1-q5",
+              "text": "What is the capital of Portugal?",
+              "imageAsset": null,
+              "answers": [
+                {"id": "capitals-s1-l1-q5-a1", "text": "Porto"},
+                {"id": "capitals-s1-l1-q5-a2", "text": "Lisbon"},
+                {"id": "capitals-s1-l1-q5-a3", "text": "Faro"},
+                {"id": "capitals-s1-l1-q5-a4", "text": "Braga"}
+              ],
+              "correctAnswerId": "capitals-s1-l1-q5-a2"
+            },
+            {
+              "id": "capitals-s1-l1-q6",
+              "text": "What is the capital of Switzerland?",
+              "imageAsset": null,
+              "answers": [
+                {"id": "capitals-s1-l1-q6-a1", "text": "Zurich"},
+                {"id": "capitals-s1-l1-q6-a2", "text": "Geneva"},
+                {"id": "capitals-s1-l1-q6-a3", "text": "Bern"},
+                {"id": "capitals-s1-l1-q6-a4", "text": "Basel"}
+              ],
+              "correctAnswerId": "capitals-s1-l1-q6-a3"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
