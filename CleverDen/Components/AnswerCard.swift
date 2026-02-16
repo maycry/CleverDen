@@ -53,7 +53,10 @@ struct AnswerCard: View {
     
     private var backgroundColor: Color {
         if isSelected {
-            return isCorrect == true ? .accentGreen : .accentOrange
+            if let isCorrect {
+                return isCorrect ? .accentGreen : .accentOrange
+            }
+            return .accentGreen // pre-check: green
         }
         return .cardBackground
     }

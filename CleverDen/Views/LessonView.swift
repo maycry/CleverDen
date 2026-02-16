@@ -50,7 +50,7 @@ struct LessonView: View {
                         ScrollView {
                             VStack(spacing: .spacingXL) {
                                 stepContent
-                                    .padding(.bottom, showFeedbackSheet ? 200 : .spacingXL)
+                                    .padding(.bottom, showFeedbackSheet ? 240 : .spacingXL)
                             }
                         }
                         

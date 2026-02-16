@@ -17,11 +17,28 @@ struct MultipleChoiceStepView: View {
             
             if viewModel.showGlobe, let countryName = step.countryName {
                 // Globe replaces options after check
-                Globe3DView(countryName: countryName)
-                    .frame(height: 250)
-                    .clipShape(RoundedRectangle(cornerRadius: .radiusCard))
-                    .padding(.horizontal, .screenPadding)
-                    .transition(.opacity)
+                ZStack {
+                    Globe3DView(countryName: countryName)
+                        .frame(height: 300)
+                    
+                    // Tooltip
+                    VStack {
+                        Text(countryName)
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundColor(.textOnAccent)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(
+                                Capsule()
+                                    .fill(Color.accentOrange)
+                            )
+                        Spacer()
+                    }
+                    .padding(.top, 12)
+                }
+                .frame(height: 300)
+                .padding(.horizontal, .screenPadding)
+                .transition(.opacity)
             } else {
                 // Options Grid
                 optionsGrid

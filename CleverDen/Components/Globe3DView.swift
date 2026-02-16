@@ -13,6 +13,7 @@ struct Globe3DView: UIViewRepresentable {
     func makeUIView(context: Context) -> SCNView {
         let sceneView = SCNView()
         sceneView.backgroundColor = .clear
+        sceneView.clipsToBounds = false
         sceneView.allowsCameraControl = false
         sceneView.autoenablesDefaultLighting = false
         sceneView.antialiasingMode = .multisampling4X
@@ -25,7 +26,7 @@ struct Globe3DView: UIViewRepresentable {
         sphere.segmentCount = 96
         
         let material = SCNMaterial()
-        material.diffuse.contents = GlobeTextureRenderer.renderTexture(highlightCountry: countryName)
+        material.diffuse.contents = GlobeTextureRenderer.shared.renderTexture(highlightCountry: countryName)
         material.diffuse.wrapS = .repeat
         material.diffuse.wrapT = .clamp
         material.lightingModel = .lambert
@@ -46,10 +47,10 @@ struct Globe3DView: UIViewRepresentable {
         // Position camera to look at the target country
         if let country = GeoJSONStore.shared.countries[countryName] {
             let center = country.center
-            let (cx, cy, cz) = latLonToXYZ(lat: center.latitude, lon: center.longitude, radius: 3.2)
+            let (cx, cy, cz) = latLonToXYZ(lat: center.latitude, lon: center.longitude, radius: 3.8)
             cameraNode.position = SCNVector3(cx, cy, cz)
         } else {
-            cameraNode.position = SCNVector3(0, 0, 3.2)
+            cameraNode.position = SCNVector3(0, 0, 3.8)
         }
         
         let constraint = SCNLookAtConstraint(target: globeNode)
@@ -81,13 +82,13 @@ struct Globe3DView: UIViewRepresentable {
         // Update texture and camera when country changes
         if let globe = uiView.scene?.rootNode.childNodes.first,
            let sphere = globe.geometry as? SCNSphere {
-            sphere.materials.first?.diffuse.contents = GlobeTextureRenderer.renderTexture(highlightCountry: countryName)
+            sphere.materials.first?.diffuse.contents = GlobeTextureRenderer.shared.renderTexture(highlightCountry: countryName)
         }
         
         if let country = GeoJSONStore.shared.countries[countryName],
            let cameraNode = uiView.scene?.rootNode.childNodes.first(where: { $0.camera != nil }) {
             let center = country.center
-            let (cx, cy, cz) = latLonToXYZ(lat: center.latitude, lon: center.longitude, radius: 3.2)
+            let (cx, cy, cz) = latLonToXYZ(lat: center.latitude, lon: center.longitude, radius: 3.8)
             
             SCNTransaction.begin()
             SCNTransaction.animationDuration = 0.8
