@@ -35,7 +35,6 @@ struct CourseDataLoader {
 
 // MARK: - JSON Decodable Structures
 
-/// Intermediate struct for decoding JSON — maps `courseId` into sections automatically
 private struct CourseJSON: Decodable {
     let id: String
     let title: String
@@ -84,7 +83,7 @@ private struct LessonJSON: Decodable {
     let title: String
     let order: Int
     let iconName: String
-    let questions: [Question]
+    let steps: [LessonStep]
     
     func toLesson(sectionId: String) -> Lesson {
         return Lesson(
@@ -93,7 +92,7 @@ private struct LessonJSON: Decodable {
             sectionId: sectionId,
             order: order,
             iconName: iconName,
-            questions: questions
+            steps: steps
         )
     }
 }

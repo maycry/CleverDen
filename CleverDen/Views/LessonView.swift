@@ -14,7 +14,7 @@ struct LessonView: View {
     @State private var questionTransitionId: Int = 0
     @Binding var userProgress: UserProgress
     let onDismiss: () -> Void
-    let onComplete: (Int) -> Void // Pass error count
+    let onComplete: (Int) -> Void
     
     init(lesson: Lesson, userProgress: Binding<UserProgress>, onDismiss: @escaping () -> Void, onComplete: @escaping (Int) -> Void) {
         self.lesson = lesson
@@ -29,8 +29,7 @@ struct LessonView: View {
             Color.backgroundSecondary
                 .ignoresSafeArea()
             
-            if lesson.questions.isEmpty {
-                // Error state - no questions
+            if lesson.steps.isEmpty {
                 VStack(spacing: .spacingXL) {
                     Text("No questions available")
                         .font(.headlineLarge)
@@ -43,38 +42,27 @@ struct LessonView: View {
                 }
             } else {
                 VStack(spacing: 0) {
-                    // Top Bar (stays put)
                     LessonTopBar(progress: viewModel.progress) {
                         onDismiss()
                     }
                     
-                    // Animating content layer
                     ZStack {
                         ScrollView {
                             VStack(spacing: .spacingXL) {
-                                // Question
-                                QuestionView(question: viewModel.currentQuestion)
-                                
-                                // Answer Grid
-                                answerGrid
-                                    .padding(.horizontal, .screenPadding)
+                                stepContent
                                     .padding(.bottom, showFeedbackSheet ? 200 : .spacingXL)
                             }
                         }
                         
-                        // Feedback Sheet as part of the animating content
                         VStack {
                             Spacer()
-                            if showFeedbackSheet {
-                                FeedbackSheet(
-                                    isCorrect: viewModel.selectedAnswerId == viewModel.currentQuestion.correctAnswerId,
-                                    onContinue: handleContinue
-                                )
-                                .transition(.move(edge: .bottom))
+                            if showFeedbackSheet, let mode = viewModel.feedbackMode {
+                                FeedbackSheet(mode: mode, onAction: handleFeedbackAction)
+                                    .transition(.move(edge: .bottom))
                             }
                         }
                     }
-                    .id(questionTransitionId) // Forces re-render with transition
+                    .id(questionTransitionId)
                     .transition(.asymmetric(
                         insertion: .move(edge: .trailing),
                         removal: .move(edge: .leading)
@@ -84,50 +72,50 @@ struct LessonView: View {
         }
         .animation(.easeInOut(duration: 0.35), value: questionTransitionId)
         .animation(.spring(response: 0.3, dampingFraction: 0.8), value: showFeedbackSheet)
+        .onChange(of: viewModel.feedbackMode) { _, newMode in
+            showFeedbackSheet = newMode != nil
+        }
     }
     
-    private var answerGrid: some View {
-        let answers = viewModel.currentQuestion.answers
-        let columns = [
-            GridItem(.flexible(), spacing: .gridGap),
-            GridItem(.flexible(), spacing: .gridGap)
-        ]
+    @ViewBuilder
+    private var stepContent: some View {
+        switch viewModel.currentStep {
+        case .multipleChoice(let step):
+            MultipleChoiceStepView(
+                step: step,
+                viewModel: viewModel,
+                onAnswerTap: handleMCAnswerTap
+            )
+        case .matchPairs(let step):
+            MatchPairsStepView(
+                step: step,
+                viewModel: viewModel
+            )
+        }
+    }
+    
+    private func handleMCAnswerTap(optionId: String) {
+        guard !viewModel.isStepComplete else { return }
+        viewModel.selectOption(optionId)
+        viewModel.submitOption()
+    }
+    
+    private func handleFeedbackAction() {
+        guard let mode = viewModel.feedbackMode else { return }
         
-        return LazyVGrid(columns: columns, spacing: .gridGap) {
-            ForEach(answers) { answer in
-                AnswerCard(
-                    text: answer.text,
-                    isSelected: viewModel.selectedAnswerId == answer.id,
-                    isCorrect: viewModel.isAnswerSubmitted ? viewModel.isAnswerCorrect(answer.id) : nil
-                )
-                .onTapGesture {
-                    handleAnswerTap(answerId: answer.id)
+        switch mode {
+        case .incorrectRetry:
+            viewModel.retryMatchPairs()
+            showFeedbackSheet = false
+        case .correct, .incorrectFinal:
+            if viewModel.isLastStep {
+                onComplete(viewModel.totalErrors)
+            } else {
+                withAnimation(.easeInOut(duration: 0.35)) {
+                    showFeedbackSheet = false
+                    viewModel.moveToNextStep()
+                    questionTransitionId += 1
                 }
-            }
-        }
-    }
-    
-    private func handleAnswerTap(answerId: String) {
-        guard !viewModel.isAnswerSubmitted else { return }
-        
-        viewModel.selectAnswer(answerId)
-        viewModel.submitAnswer()
-        
-        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-            showFeedbackSheet = true
-        }
-    }
-    
-    private func handleContinue() {
-        if viewModel.isLastQuestion {
-            // Navigate to completion screen (handled by LessonFlowView)
-            onComplete(viewModel.errorCount)
-        } else {
-            // Animate transition to next question
-            withAnimation(.easeInOut(duration: 0.35)) {
-                showFeedbackSheet = false
-                viewModel.moveToNextQuestion()
-                questionTransitionId += 1 // Trigger transition
             }
         }
     }

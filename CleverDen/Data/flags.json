@@ -15,78 +15,84 @@
           "title": "Western Europe p.1",
           "order": 1,
           "iconName": "flag",
-          "questions": [
+          "steps": [
             {
+              "type": "multipleChoice",
               "id": "flags-s1-l1-q1",
-              "text": "Which country does this flag belong to?",
-              "imageAsset": "🇫🇷",
-              "answers": [
-                {"id": "flags-s1-l1-q1-a1", "text": "France"},
-                {"id": "flags-s1-l1-q1-a2", "text": "Italy"},
-                {"id": "flags-s1-l1-q1-a3", "text": "Netherlands"},
-                {"id": "flags-s1-l1-q1-a4", "text": "Belgium"}
+              "variant": "flagToCountry",
+              "prompt": "Which country does this flag belong to?",
+              "promptImage": "🇫🇷",
+              "options": [
+                {"id": "a1", "text": "France"},
+                {"id": "a2", "text": "Italy"},
+                {"id": "a3", "text": "Netherlands"},
+                {"id": "a4", "text": "Belgium"}
               ],
-              "correctAnswerId": "flags-s1-l1-q1-a1"
+              "correctOptionId": "a1"
             },
             {
+              "type": "multipleChoice",
               "id": "flags-s1-l1-q2",
-              "text": "Which country does this flag belong to?",
-              "imageAsset": "🇩🇪",
-              "answers": [
-                {"id": "flags-s1-l1-q2-a1", "text": "Austria"},
-                {"id": "flags-s1-l1-q2-a2", "text": "Germany"},
-                {"id": "flags-s1-l1-q2-a3", "text": "Belgium"},
-                {"id": "flags-s1-l1-q2-a4", "text": "Luxembourg"}
+              "variant": "flagToCountry",
+              "prompt": "Which country does this flag belong to?",
+              "promptImage": "🇩🇪",
+              "options": [
+                {"id": "a1", "text": "Austria"},
+                {"id": "a2", "text": "Germany"},
+                {"id": "a3", "text": "Belgium"},
+                {"id": "a4", "text": "Luxembourg"}
               ],
-              "correctAnswerId": "flags-s1-l1-q2-a2"
+              "correctOptionId": "a2"
             },
             {
+              "type": "multipleChoice",
               "id": "flags-s1-l1-q3",
-              "text": "Which country does this flag belong to?",
-              "imageAsset": "🇪🇸",
-              "answers": [
-                {"id": "flags-s1-l1-q3-a1", "text": "Portugal"},
-                {"id": "flags-s1-l1-q3-a2", "text": "Mexico"},
-                {"id": "flags-s1-l1-q3-a3", "text": "Spain"},
-                {"id": "flags-s1-l1-q3-a4", "text": "Andorra"}
+              "variant": "countryToFlag",
+              "prompt": "Select the flag of Spain",
+              "options": [
+                {"id": "a1", "image": "🇵🇹"},
+                {"id": "a2", "image": "🇲🇽"},
+                {"id": "a3", "image": "🇪🇸"},
+                {"id": "a4", "image": "🇦🇩"}
               ],
-              "correctAnswerId": "flags-s1-l1-q3-a3"
+              "correctOptionId": "a3"
             },
             {
+              "type": "multipleChoice",
               "id": "flags-s1-l1-q4",
-              "text": "Which country does this flag belong to?",
-              "imageAsset": "🇮🇹",
-              "answers": [
-                {"id": "flags-s1-l1-q4-a1", "text": "Ireland"},
-                {"id": "flags-s1-l1-q4-a2", "text": "Italy"},
-                {"id": "flags-s1-l1-q4-a3", "text": "Hungary"},
-                {"id": "flags-s1-l1-q4-a4", "text": "Mexico"}
+              "variant": "flagToCountry",
+              "prompt": "Which country does this flag belong to?",
+              "promptImage": "🇮🇹",
+              "options": [
+                {"id": "a1", "text": "Ireland"},
+                {"id": "a2", "text": "Italy"},
+                {"id": "a3", "text": "Hungary"},
+                {"id": "a4", "text": "Mexico"}
               ],
-              "correctAnswerId": "flags-s1-l1-q4-a2"
+              "correctOptionId": "a2"
             },
             {
+              "type": "multipleChoice",
               "id": "flags-s1-l1-q5",
-              "text": "Which country does this flag belong to?",
-              "imageAsset": "🇬🇧",
-              "answers": [
-                {"id": "flags-s1-l1-q5-a1", "text": "Australia"},
-                {"id": "flags-s1-l1-q5-a2", "text": "New Zealand"},
-                {"id": "flags-s1-l1-q5-a3", "text": "United Kingdom"},
-                {"id": "flags-s1-l1-q5-a4", "text": "Iceland"}
+              "variant": "countryToFlag",
+              "prompt": "Select the flag of the United Kingdom",
+              "options": [
+                {"id": "a1", "image": "🇦🇺"},
+                {"id": "a2", "image": "🇳🇿"},
+                {"id": "a3", "image": "🇬🇧"},
+                {"id": "a4", "image": "🇮🇸"}
               ],
-              "correctAnswerId": "flags-s1-l1-q5-a3"
+              "correctOptionId": "a3"
             },
             {
+              "type": "matchPairs",
               "id": "flags-s1-l1-q6",
-              "text": "Which country does this flag belong to?",
-              "imageAsset": "🇵🇹",
-              "answers": [
-                {"id": "flags-s1-l1-q6-a1", "text": "Brazil"},
-                {"id": "flags-s1-l1-q6-a2", "text": "Portugal"},
-                {"id": "flags-s1-l1-q6-a3", "text": "Spain"},
-                {"id": "flags-s1-l1-q6-a4", "text": "Italy"}
-              ],
-              "correctAnswerId": "flags-s1-l1-q6-a2"
+              "pairs": [
+                {"id": "p1", "left": "🇫🇷", "right": "France"},
+                {"id": "p2", "left": "🇩🇪", "right": "Germany"},
+                {"id": "p3", "left": "🇪🇸", "right": "Spain"},
+                {"id": "p4", "left": "🇮🇹", "right": "Italy"}
+              ]
             }
           ]
         },
@@ -95,78 +101,84 @@
           "title": "Western Europe p.2",
           "order": 2,
           "iconName": "flag",
-          "questions": [
+          "steps": [
             {
+              "type": "multipleChoice",
               "id": "flags-s1-l2-q1",
-              "text": "Which country does this flag belong to?",
-              "imageAsset": "🇳🇱",
-              "answers": [
-                {"id": "flags-s1-l2-q1-a1", "text": "Luxembourg"},
-                {"id": "flags-s1-l2-q1-a2", "text": "Netherlands"},
-                {"id": "flags-s1-l2-q1-a3", "text": "France"},
-                {"id": "flags-s1-l2-q1-a4", "text": "Russia"}
+              "variant": "flagToCountry",
+              "prompt": "Which country does this flag belong to?",
+              "promptImage": "🇳🇱",
+              "options": [
+                {"id": "a1", "text": "Luxembourg"},
+                {"id": "a2", "text": "Netherlands"},
+                {"id": "a3", "text": "France"},
+                {"id": "a4", "text": "Russia"}
               ],
-              "correctAnswerId": "flags-s1-l2-q1-a2"
+              "correctOptionId": "a2"
             },
             {
+              "type": "multipleChoice",
               "id": "flags-s1-l2-q2",
-              "text": "Which country does this flag belong to?",
-              "imageAsset": "🇧🇪",
-              "answers": [
-                {"id": "flags-s1-l2-q2-a1", "text": "Belgium"},
-                {"id": "flags-s1-l2-q2-a2", "text": "Germany"},
-                {"id": "flags-s1-l2-q2-a3", "text": "Chad"},
-                {"id": "flags-s1-l2-q2-a4", "text": "Romania"}
+              "variant": "countryToFlag",
+              "prompt": "Select the flag of Belgium",
+              "options": [
+                {"id": "a1", "image": "🇧🇪"},
+                {"id": "a2", "image": "🇩🇪"},
+                {"id": "a3", "image": "🇹🇩"},
+                {"id": "a4", "image": "🇷🇴"}
               ],
-              "correctAnswerId": "flags-s1-l2-q2-a1"
+              "correctOptionId": "a1"
             },
             {
+              "type": "multipleChoice",
               "id": "flags-s1-l2-q3",
-              "text": "Which country does this flag belong to?",
-              "imageAsset": "🇨🇭",
-              "answers": [
-                {"id": "flags-s1-l2-q3-a1", "text": "Denmark"},
-                {"id": "flags-s1-l2-q3-a2", "text": "Austria"},
-                {"id": "flags-s1-l2-q3-a3", "text": "Switzerland"},
-                {"id": "flags-s1-l2-q3-a4", "text": "Sweden"}
+              "variant": "flagToCountry",
+              "prompt": "Which country does this flag belong to?",
+              "promptImage": "🇨🇭",
+              "options": [
+                {"id": "a1", "text": "Denmark"},
+                {"id": "a2", "text": "Austria"},
+                {"id": "a3", "text": "Switzerland"},
+                {"id": "a4", "text": "Sweden"}
               ],
-              "correctAnswerId": "flags-s1-l2-q3-a3"
+              "correctOptionId": "a3"
             },
             {
+              "type": "multipleChoice",
               "id": "flags-s1-l2-q4",
-              "text": "Which country does this flag belong to?",
-              "imageAsset": "🇦🇹",
-              "answers": [
-                {"id": "flags-s1-l2-q4-a1", "text": "Latvia"},
-                {"id": "flags-s1-l2-q4-a2", "text": "Austria"},
-                {"id": "flags-s1-l2-q4-a3", "text": "Peru"},
-                {"id": "flags-s1-l2-q4-a4", "text": "Denmark"}
+              "variant": "countryToFlag",
+              "prompt": "Select the flag of Austria",
+              "options": [
+                {"id": "a1", "image": "🇱🇻"},
+                {"id": "a2", "image": "🇦🇹"},
+                {"id": "a3", "image": "🇵🇪"},
+                {"id": "a4", "image": "🇩🇰"}
               ],
-              "correctAnswerId": "flags-s1-l2-q4-a2"
+              "correctOptionId": "a2"
             },
             {
+              "type": "multipleChoice",
               "id": "flags-s1-l2-q5",
-              "text": "Which country does this flag belong to?",
-              "imageAsset": "🇮🇪",
-              "answers": [
-                {"id": "flags-s1-l2-q5-a1", "text": "Ivory Coast"},
-                {"id": "flags-s1-l2-q5-a2", "text": "Italy"},
-                {"id": "flags-s1-l2-q5-a3", "text": "Ireland"},
-                {"id": "flags-s1-l2-q5-a4", "text": "India"}
+              "variant": "flagToCountry",
+              "prompt": "Which country does this flag belong to?",
+              "promptImage": "🇮🇪",
+              "options": [
+                {"id": "a1", "text": "Ivory Coast"},
+                {"id": "a2", "text": "Italy"},
+                {"id": "a3", "text": "Ireland"},
+                {"id": "a4", "text": "India"}
               ],
-              "correctAnswerId": "flags-s1-l2-q5-a3"
+              "correctOptionId": "a3"
             },
             {
+              "type": "matchPairs",
               "id": "flags-s1-l2-q6",
-              "text": "Which country does this flag belong to?",
-              "imageAsset": "🇱🇺",
-              "answers": [
-                {"id": "flags-s1-l2-q6-a1", "text": "Netherlands"},
-                {"id": "flags-s1-l2-q6-a2", "text": "France"},
-                {"id": "flags-s1-l2-q6-a3", "text": "Luxembourg"},
-                {"id": "flags-s1-l2-q6-a4", "text": "Paraguay"}
-              ],
-              "correctAnswerId": "flags-s1-l2-q6-a3"
+              "pairs": [
+                {"id": "p1", "left": "🇳🇱", "right": "Netherlands"},
+                {"id": "p2", "left": "🇧🇪", "right": "Belgium"},
+                {"id": "p3", "left": "🇨🇭", "right": "Switzerland"},
+                {"id": "p4", "left": "🇦🇹", "right": "Austria"}
+              ]
             }
           ]
         }

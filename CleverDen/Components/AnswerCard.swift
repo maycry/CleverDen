@@ -11,6 +11,7 @@ struct AnswerCard: View {
     let text: String
     let isSelected: Bool
     let isCorrect: Bool?
+    var isEmoji: Bool = false
     @State private var showParticles = false
     
     var body: some View {
@@ -20,18 +21,23 @@ struct AnswerCard: View {
                 .fill(backgroundColor)
                 .shadowSubtle()
                 .overlay {
-                    // Decorative particles for selected state
                     if isSelected {
                         particleOverlay
                     }
                 }
             
             // Content
-            Text(text)
-                .font(.bodyLarge)
-                .foregroundColor(isSelected ? .textOnAccent : .textPrimary)
-                .padding(.cardPadding)
-                .multilineTextAlignment(.center)
+            if isEmoji {
+                Text(text)
+                    .font(.system(size: 48))
+                    .padding(.cardPadding)
+            } else {
+                Text(text)
+                    .font(.bodyLarge)
+                    .foregroundColor(isSelected ? .textOnAccent : .textPrimary)
+                    .padding(.cardPadding)
+                    .multilineTextAlignment(.center)
+            }
         }
         .scaleEffect(isSelected ? 1.02 : 1.0)
         .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isSelected)

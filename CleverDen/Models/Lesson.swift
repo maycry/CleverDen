@@ -13,7 +13,7 @@ struct Lesson: Identifiable, Codable, Hashable {
     let sectionId: String
     let order: Int
     let iconName: String // SF Symbol name or asset name
-    let questions: [Question]
+    let steps: [LessonStep]
     
     enum Status: Equatable {
         case locked

@@ -17,6 +17,7 @@ extension Color {
     static let accentOrange = Color(hex: "#FF5A35")
     static let accentOrangeSubdued = Color(hex: "#FC6441")
     static let accentGreen = Color(hex: "#2BD471")
+    static let accentBlue = Color(hex: "#4A90D9")
     static let accentGold = Color(hex: "#FFB73B")
     static let accentGoldAlt = Color(hex: "#FF7D35")
     

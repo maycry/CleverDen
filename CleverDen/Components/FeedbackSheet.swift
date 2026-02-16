@@ -8,26 +8,67 @@
 import SwiftUI
 import UIKit
 
+enum FeedbackMode {
+    case correct
+    case incorrectRetry
+    case incorrectFinal
+    
+    var isCorrect: Bool { self == .correct }
+    
+    var title: String {
+        switch self {
+        case .correct: return "Correct"
+        case .incorrectRetry, .incorrectFinal: return "Incorrect"
+        }
+    }
+    
+    var buttonTitle: String {
+        switch self {
+        case .correct, .incorrectFinal: return "Continue"
+        case .incorrectRetry: return "Try Again"
+        }
+    }
+    
+    var iconName: String {
+        isCorrect ? "checkmark.circle.fill" : "xmark.circle.fill"
+    }
+    
+    var color: Color {
+        isCorrect ? .accentGreen : .accentOrange
+    }
+}
+
 struct FeedbackSheet: View {
-    let isCorrect: Bool
-    let onContinue: () -> Void
+    let mode: FeedbackMode
+    let onAction: () -> Void
+    
+    /// Convenience init for backward compatibility
+    init(isCorrect: Bool, onContinue: @escaping () -> Void) {
+        self.mode = isCorrect ? .correct : .incorrectFinal
+        self.onAction = onContinue
+    }
+    
+    init(mode: FeedbackMode, onAction: @escaping () -> Void) {
+        self.mode = mode
+        self.onAction = onAction
+    }
     
     var body: some View {
         VStack(spacing: .spacingL) {
             // Feedback content
             HStack(spacing: .spacingM) {
-                Image(systemName: isCorrect ? "checkmark.circle.fill" : "xmark.circle.fill")
+                Image(systemName: mode.iconName)
                     .font(.system(size: 24))
-                    .foregroundColor(isCorrect ? .accentGreen : .accentOrange)
+                    .foregroundColor(mode.color)
                 
-                Text(isCorrect ? "Correct" : "Incorrect")
+                Text(mode.title)
                     .font(.bodyLarge)
-                    .foregroundColor(isCorrect ? .accentGreen : .accentOrange)
+                    .foregroundColor(mode.color)
             }
             .padding(.top, .spacingXL)
             
-            // Continue button
-            PrimaryButton(title: "Continue", action: onContinue)
+            // Action button
+            PrimaryButton(title: mode.buttonTitle, action: onAction)
                 .padding(.horizontal, .screenPadding)
                 .padding(.bottom, .spacingXL)
         }
