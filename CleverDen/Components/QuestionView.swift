@@ -11,11 +11,18 @@ struct QuestionView: View {
     let question: Question
     
     var body: some View {
-        Text(question.text)
-            .font(.question)
-            .foregroundColor(.textPrimary)
-            .multilineTextAlignment(.center)
-            .padding(.horizontal, .screenPadding)
-            .padding(.vertical, .spacingXL)
+        VStack(spacing: .spacingM) {
+            if let imageAsset = question.imageAsset, !imageAsset.isEmpty {
+                Text(imageAsset)
+                    .font(.system(size: 80))
+            }
+            
+            Text(question.text)
+                .font(.question)
+                .foregroundColor(.textPrimary)
+                .multilineTextAlignment(.center)
+        }
+        .padding(.horizontal, .screenPadding)
+        .padding(.vertical, .spacingXL)
     }
 }
