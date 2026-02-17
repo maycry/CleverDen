@@ -89,6 +89,12 @@ class LessonViewModel {
     func selectMatchItem(column: MatchColumn, id: String) {
         guard case .matchPairs = currentStep, !isStepComplete else { return }
         
+        // If showing retry feedback, dismiss it instead of selecting
+        if feedbackMode == .incorrectRetry {
+            retryMatchPairs()
+            return
+        }
+        
         // Clear wrong state
         wrongLeftId = nil
         wrongRightId = nil
