@@ -103,7 +103,11 @@ struct CourseDetailView: View {
                     )
                 }
             } else {
-                ProfileView(userProgress: viewModel.userProgress)
+                ProfileView(userProgress: viewModel.userProgress) {
+                        viewModel.userProgress.completedLessons = [:]
+                        viewModel.userProgress.currentLessonId = nil
+                        viewModel.saveProgress()
+                    }
                     .overlay(alignment: .bottom) {
                         FloatingNavBar(selectedTab: $selectedTab)
                     }

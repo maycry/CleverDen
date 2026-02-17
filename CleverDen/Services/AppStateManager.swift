@@ -26,4 +26,10 @@ class AppStateManager {
         update(userProgress)
         saveProgress()
     }
+    
+    func resetProgress() {
+        persistenceService.clearProgress()
+        userProgress.completedLessons = [:]
+        userProgress.currentLessonId = nil
+    }
 }

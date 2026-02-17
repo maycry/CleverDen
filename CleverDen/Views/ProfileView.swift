@@ -9,6 +9,9 @@ import SwiftUI
 
 struct ProfileView: View {
     let userProgress: UserProgress
+    var onResetProgress: (() -> Void)?
+    
+    @State private var showResetConfirmation = false
     
     var body: some View {
         ZStack {
@@ -34,7 +37,27 @@ struct ProfileView: View {
                 .padding(.horizontal, .screenPadding)
                 
                 Spacer()
+                
+                // Reset progress button
+                if onResetProgress != nil {
+                    Button {
+                        showResetConfirmation = true
+                    } label: {
+                        Text("Reset Progress")
+                            .font(.body)
+                            .foregroundColor(.red)
+                    }
+                    .padding(.bottom, 100)
+                }
             }
+        }
+        .alert("Reset Progress?", isPresented: $showResetConfirmation) {
+            Button("Cancel", role: .cancel) { }
+            Button("Reset", role: .destructive) {
+                onResetProgress?()
+            }
+        } message: {
+            Text("This will erase all your stars and lesson progress. This cannot be undone.")
         }
     }
     
