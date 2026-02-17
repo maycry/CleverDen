@@ -181,23 +181,13 @@ class LessonViewModel {
         matchPairsErrorCount = 0
     }
     
-    func getDiamondsEarned() -> Int {
+    func getStarsEarned() -> Int {
         if totalErrors == 0 {
             return 3
         } else if totalErrors <= 2 {
             return 2
         } else {
             return 1
-        }
-    }
-    
-    func getCoinsEarned() -> Int {
-        if totalErrors == 0 {
-            return 75
-        } else if totalErrors <= 2 {
-            return 50
-        } else {
-            return 25
         }
     }
 }

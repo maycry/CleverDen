@@ -28,14 +28,18 @@ struct ProfileView: View {
                 
                 // Statistics
                 VStack(spacing: .spacingL) {
-                    StatCard(title: "Total Coins", value: "\(userProgress.coins)")
                     StatCard(title: "Lessons Completed", value: "\(userProgress.completedLessons.count)")
+                    StatCard(title: "Total Stars", value: "\(totalStars)")
                 }
                 .padding(.horizontal, .screenPadding)
                 
                 Spacer()
             }
         }
+    }
+    
+    private var totalStars: Int {
+        userProgress.completedLessons.values.reduce(0, +)
     }
 }
 

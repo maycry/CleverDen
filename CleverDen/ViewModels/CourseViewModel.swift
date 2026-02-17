@@ -32,7 +32,7 @@ class CourseViewModel {
     }
     
     func getLessonStatus(_ lesson: Lesson) -> Lesson.Status {
-        userProgress.getLessonStatus(lesson, allLessons: getAllLessons())
+        userProgress.getLessonStatus(lesson, allLessons: getAllLessons(), allSections: sections)
     }
     
     func getNextAvailableLesson() -> Lesson? {

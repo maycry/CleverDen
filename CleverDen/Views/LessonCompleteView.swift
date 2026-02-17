@@ -29,8 +29,8 @@ struct LessonCompleteView: View {
             
             ScrollView {
                 VStack(spacing: .spacingXXL) {
-                    // Diamonds
-                    DiamondDisplay(diamonds: viewModel.diamondsEarned, size: 20)
+                    // Stars
+                    StarDisplay(stars: viewModel.starsEarned, size: 32)
                         .padding(.top, .spacingXXXL)
                     
                     // Fox mascot
@@ -40,7 +40,7 @@ struct LessonCompleteView: View {
                     
                     // Completion messages
                     VStack(spacing: .spacingS) {
-                        Text("Great job!")
+                        Text(completionTitle)
                             .font(.headlineMedium)
                             .foregroundColor(.textPrimary)
                         
@@ -48,10 +48,6 @@ struct LessonCompleteView: View {
                             .font(.body)
                             .foregroundColor(.textSecondary)
                     }
-                    
-                    // Reward meter
-                    rewardMeter
-                        .padding(.horizontal, .screenPadding)
                     
                     // Continue button
                     PrimaryButton(title: "Continue", action: handleContinue)
@@ -63,56 +59,19 @@ struct LessonCompleteView: View {
         }
     }
     
-    private var rewardMeter: some View {
-        VStack(alignment: .leading, spacing: .spacingM) {
-            Text("Lever reward")
-                .font(.body)
-                .foregroundColor(.textSecondary)
-            
-            HStack(spacing: .spacingM) {
-                // Progress bar
-                ProgressBar(progress: rewardProgress)
-                    .frame(height: 12)
-                
-                // Reward amount
-                HStack(spacing: .spacingXS) {
-                    Text("+\(viewModel.coinsEarned)")
-                        .font(.bodyLarge)
-                        .foregroundColor(.textPrimary)
-                    
-                    Image(systemName: "circle.fill")
-                        .font(.system(size: 16))
-                        .foregroundColor(.accentGold)
-                }
-            }
-        }
-        .padding(.cardPadding)
-        .background(Color.backgroundPrimary)
-        .cornerRadius(.radiusLarge)
-        .shadowSubtle()
-    }
-    
-    private var rewardProgress: Double {
-        // Calculate progress based on coins earned (25, 50, or 75)
-        // This is a simplified calculation - adjust based on your reward system
-        if viewModel.coinsEarned == 75 {
-            return 1.0
-        } else if viewModel.coinsEarned == 50 {
-            return 0.67
-        } else {
-            return 0.33
+    private var completionTitle: String {
+        switch viewModel.starsEarned {
+        case 3: return "Perfect!"
+        case 2: return "Great job!"
+        default: return "Good effort!"
         }
     }
     
     private func handleContinue() {
-        // Update user progress
         userProgress.markLessonComplete(
             lessonId: lesson.id,
-            diamonds: viewModel.diamondsEarned,
-            coinsEarned: viewModel.coinsEarned
+            stars: viewModel.starsEarned
         )
-        
-        // Navigate back (persistence will be handled by CourseView)
         onContinue()
     }
 }

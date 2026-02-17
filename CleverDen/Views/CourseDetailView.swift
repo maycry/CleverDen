@@ -93,18 +93,6 @@ struct CourseDetailView: View {
                             }
                             
                             Spacer()
-                            
-                            // Coins display
-                            HStack(spacing: .spacingXS) {
-                                Text("\(viewModel.userProgress.coins)")
-                                    .font(.bodyLarge)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.textPrimary)
-                                
-                                Image(systemName: "diamond.fill")
-                                    .font(.system(size: 20))
-                                    .foregroundColor(.accentGold)
-                            }
                         }
                     }
                     .padding(.horizontal, .screenPadding)

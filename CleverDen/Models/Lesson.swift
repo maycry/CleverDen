@@ -18,6 +18,6 @@ struct Lesson: Identifiable, Codable, Hashable {
     enum Status: Equatable {
         case locked
         case available
-        case completed(diamonds: Int) // 1-3 diamonds earned
+        case completed(stars: Int) // 1-3 stars earned
     }
 }

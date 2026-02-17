@@ -28,9 +28,9 @@ struct LessonPill: View {
                     .foregroundColor(iconColor)
             }
             
-            // Diamonds (only for completed lessons)
-            if case .completed(let diamonds) = status {
-                DiamondDisplay(diamonds: diamonds)
+            // Stars (only for completed lessons)
+            if case .completed(let stars) = status {
+                StarDisplay(stars: stars)
             }
             
             // Label
