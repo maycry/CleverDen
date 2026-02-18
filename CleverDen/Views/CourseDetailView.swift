@@ -102,6 +102,11 @@ struct CourseDetailView: View {
                             .ignoresSafeArea(edges: .top)
                     )
                 }
+            } else if selectedTab == .challenge {
+                ChallengeSetupView(course: course)
+                    .overlay(alignment: .bottom) {
+                        FloatingNavBar(selectedTab: $selectedTab)
+                    }
             } else {
                 ProfileView(userProgress: viewModel.userProgress) {
                         viewModel.userProgress.completedLessons = [:]

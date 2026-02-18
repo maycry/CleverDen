@@ -12,6 +12,7 @@ struct FloatingNavBar: View {
     
     enum Tab {
         case home
+        case challenge
         case profile
     }
     
@@ -24,9 +25,16 @@ struct FloatingNavBar: View {
                     .foregroundColor(selectedTab == .home ? .textPrimary : .textSecondary)
             }
             
+            // Challenge icon
+            Button(action: { selectedTab = .challenge }) {
+                Image(systemName: "pawprint.fill")
+                    .font(.system(size: 24))
+                    .foregroundColor(selectedTab == .challenge ? .textPrimary : .textSecondary)
+            }
+            
             // Profile icon
             Button(action: { selectedTab = .profile }) {
-                Image(systemName: "pawprint.fill")
+                Image(systemName: "person.fill")
                     .font(.system(size: 24))
                     .foregroundColor(selectedTab == .profile ? .textPrimary : .textSecondary)
             }

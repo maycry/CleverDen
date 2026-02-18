@@ -7,8 +7,15 @@
 
 import SwiftUI
 
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        OrientationManager.shared.isLandscapeLocked ? .landscape : .portrait
+    }
+}
+
 @main
 struct CleverDenApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     init() {
         // Pre-warm globe data on background thread
