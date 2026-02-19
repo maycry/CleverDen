@@ -32,33 +32,20 @@ struct ChallengePlayView: View {
                 goView
             case .playing, .roundResult:
                 gameplayView
-            case .gameOver:
-                gameOverView
             case .finished:
                 Color.clear
-                    .onAppear {
-                        OrientationManager.shared.lockPortrait {
-                            showResults = true
-                        }
-                    }
+                    .onAppear { showResults = true }
             }
         }
         .onAppear {
-            OrientationManager.shared.lockLandscape {
-                viewModel.startCountdown()
-            }
-        }
-        .onDisappear {
-            OrientationManager.shared.lockPortrait()
+            viewModel.startCountdown()
         }
         .fullScreenCover(isPresented: $showResults) {
             ChallengeResultView(
                 match: viewModel.match,
                 onRematch: {
                     showResults = false
-                    OrientationManager.shared.lockLandscape {
-                        viewModel.rematch(course: course)
-                    }
+                    viewModel.rematch(course: course)
                 },
                 onDone: {
                     showResults = false
@@ -74,10 +61,9 @@ struct ChallengePlayView: View {
         Text("\(number)")
             .font(.system(size: 96, weight: .bold))
             .foregroundColor(.textPrimary)
-            .scaleEffect(1.0)
-            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: number)
             .id(number)
             .transition(.scale.combined(with: .opacity))
+            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: number)
     }
     
     private var goView: some View {
@@ -87,70 +73,57 @@ struct ChallengePlayView: View {
             .transition(.scale.combined(with: .opacity))
     }
     
-    private var gameOverView: some View {
-        VStack(spacing: .spacingM) {
-            Text("🏆")
-                .font(.system(size: 64))
-            if viewModel.match.isTie {
-                Text("It's a Tie!")
-                    .font(.headlineLarge)
-                    .foregroundColor(.textPrimary)
-            } else if let winner = viewModel.match.winnerName {
-                Text("\(winner) Wins!")
-                    .font(.headlineLarge)
-                    .foregroundColor(.textPrimary)
-            }
-            Text("\(viewModel.match.player1Score) : \(viewModel.match.player2Score)")
-                .font(.system(size: 48, weight: .bold))
-                .foregroundColor(.textPrimary)
-                .monospacedDigit()
-        }
-        .transition(.scale.combined(with: .opacity))
-    }
-    
     // MARK: - Gameplay
     
-    private var closeButton: some View {
-        Button {
-            OrientationManager.shared.lockPortrait()
-            dismiss()
-        } label: {
-            Image(systemName: "xmark")
-                .font(.system(size: 18, weight: .semibold))
-                .foregroundColor(.textPrimary)
-                .frame(width: 44, height: 44)
-        }
-    }
-    
     private var gameplayView: some View {
-        VStack(spacing: .spacingS) {
-            // Score bar with close button
+        VStack(spacing: 0) {
+            // Top bar with X
             HStack {
-                closeButton
-                scoreBar
-                    .frame(maxWidth: .infinity)
-                Spacer().frame(width: 44) // balance
+                Button { dismiss() } label: {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundColor(.textPrimary)
+                        .frame(width: 44, height: 44)
+                }
+                Spacer()
             }
-            .padding(.horizontal, .spacingS)
-            .padding(.top, .spacingS)
+            .padding(.horizontal, .screenPadding)
             
-            // Main content: P1 buttons | Question | P2 buttons
-            HStack(spacing: 0) {
-                // Player 1 buttons (left)
-                playerColumn(player: 1)
+            // Score bar
+            scoreBar
+                .padding(.horizontal, .screenPadding)
+            
+            Spacer().frame(height: .spacingXL)
+            
+            // Question
+            questionView
+                .padding(.horizontal, .screenPadding)
+            
+            Spacer().frame(height: .spacingXL)
+            
+            // Player labels
+            HStack(spacing: .spacingM) {
+                Text(viewModel.match.player1Name)
+                    .font(.caption)
+                    .foregroundColor(.textSecondary)
                     .frame(maxWidth: .infinity)
                 
-                // Question in center
-                questionView
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal, .spacingM)
-                
-                // Player 2 buttons (right)
-                playerColumn(player: 2)
+                Text(viewModel.match.player2Name)
+                    .font(.caption)
+                    .foregroundColor(.textSecondary)
                     .frame(maxWidth: .infinity)
             }
-            .padding(.horizontal, .spacingM)
+            .padding(.horizontal, .screenPadding)
             .padding(.bottom, .spacingS)
+            
+            // Two columns of buttons
+            HStack(alignment: .top, spacing: .spacingM) {
+                playerColumn(player: 1)
+                playerColumn(player: 2)
+            }
+            .padding(.horizontal, .screenPadding)
+            
+            Spacer()
         }
     }
     
@@ -158,18 +131,15 @@ struct ChallengePlayView: View {
     
     private var scoreBar: some View {
         HStack {
-            // Player 1 name
             Text(viewModel.match.player1Name)
                 .font(.bodyLarge)
                 .foregroundColor(.textPrimary)
                 .lineLimit(1)
             
-            // Player 1 dots
             roundDots(for: 1)
             
             Spacer()
             
-            // Score
             Text("\(viewModel.match.player1Score) : \(viewModel.match.player2Score)")
                 .font(.headlineMedium)
                 .foregroundColor(.textPrimary)
@@ -177,10 +147,8 @@ struct ChallengePlayView: View {
             
             Spacer()
             
-            // Player 2 dots
             roundDots(for: 2)
             
-            // Player 2 name
             Text(viewModel.match.player2Name)
                 .font(.bodyLarge)
                 .foregroundColor(.textPrimary)
@@ -217,7 +185,6 @@ struct ChallengePlayView: View {
     private var questionView: some View {
         VStack(spacing: .spacingM) {
             if let question = viewModel.currentQuestion {
-                // Prompt image (flag emoji for countryToFlag, etc.)
                 if let promptImage = question.promptImage {
                     Text(promptImage)
                         .font(.system(size: 48))
@@ -240,6 +207,7 @@ struct ChallengePlayView: View {
                     .id("slot-\(player)-\(index)")
             }
         }
+        .frame(maxWidth: .infinity)
     }
     
     private func challengeOptionButton(player: Int, option: MCOption) -> some View {
@@ -270,7 +238,7 @@ struct ChallengePlayView: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .frame(height: 56)
+            .frame(height: 60)
         }
         .disabled(state == .disabled || state == .correct || state == .wrong || state == .correctReveal)
         .animation(.spring(response: 0.3, dampingFraction: 0.7), value: state)
