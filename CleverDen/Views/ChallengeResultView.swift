@@ -89,9 +89,6 @@ struct ChallengeResultView: View {
                 .padding(.bottom, .spacingXXL)
             }
         }
-        .onAppear {
-            OrientationManager.shared.lockPortrait()
-        }
     }
     
     private func roundDotsRow(for player: Int) -> some View {

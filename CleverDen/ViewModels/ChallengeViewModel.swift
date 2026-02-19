@@ -14,6 +14,7 @@ class ChallengeViewModel {
         case go
         case playing
         case roundResult(ChallengeMatch.RoundResult.Winner)
+        case gameOver // brief pause before results
         case finished
     }
     
@@ -170,7 +171,11 @@ class ChallengeViewModel {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { [weak self] in
             guard let self else { return }
             if self.match.isFinished {
-                self.phase = .finished
+                self.phase = .gameOver
+                // Brief pause in landscape before transitioning to results
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    self.phase = .finished
+                }
             } else {
                 self.startRound()
             }

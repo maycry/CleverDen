@@ -31,6 +31,7 @@ struct FloatingNavBar: View {
                     .font(.system(size: 24))
                     .foregroundColor(selectedTab == .challenge ? .textPrimary : .textSecondary)
             }
+            .accessibilityLabel("Challenge")
             
             // Profile icon
             Button(action: { selectedTab = .profile }) {

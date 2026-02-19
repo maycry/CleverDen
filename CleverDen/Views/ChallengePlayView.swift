@@ -32,14 +32,21 @@ struct ChallengePlayView: View {
                 goView
             case .playing, .roundResult:
                 gameplayView
+            case .gameOver:
+                gameOverView
             case .finished:
                 Color.clear
-                    .onAppear { showResults = true }
+                    .onAppear {
+                        OrientationManager.shared.lockPortrait {
+                            showResults = true
+                        }
+                    }
             }
         }
         .onAppear {
-            OrientationManager.shared.lockLandscape()
-            viewModel.startCountdown()
+            OrientationManager.shared.lockLandscape {
+                viewModel.startCountdown()
+            }
         }
         .onDisappear {
             OrientationManager.shared.lockPortrait()
@@ -49,7 +56,9 @@ struct ChallengePlayView: View {
                 match: viewModel.match,
                 onRematch: {
                     showResults = false
-                    viewModel.rematch(course: course)
+                    OrientationManager.shared.lockLandscape {
+                        viewModel.rematch(course: course)
+                    }
                 },
                 onDone: {
                     showResults = false
@@ -76,6 +85,27 @@ struct ChallengePlayView: View {
             .font(.system(size: 80, weight: .bold))
             .foregroundColor(.accentGreen)
             .transition(.scale.combined(with: .opacity))
+    }
+    
+    private var gameOverView: some View {
+        VStack(spacing: .spacingM) {
+            Text("🏆")
+                .font(.system(size: 64))
+            if viewModel.match.isTie {
+                Text("It's a Tie!")
+                    .font(.headlineLarge)
+                    .foregroundColor(.textPrimary)
+            } else if let winner = viewModel.match.winnerName {
+                Text("\(winner) Wins!")
+                    .font(.headlineLarge)
+                    .foregroundColor(.textPrimary)
+            }
+            Text("\(viewModel.match.player1Score) : \(viewModel.match.player2Score)")
+                .font(.system(size: 48, weight: .bold))
+                .foregroundColor(.textPrimary)
+                .monospacedDigit()
+        }
+        .transition(.scale.combined(with: .opacity))
     }
     
     // MARK: - Gameplay
@@ -205,8 +235,9 @@ struct ChallengePlayView: View {
     
     private func playerColumn(player: Int) -> some View {
         VStack(spacing: .spacingS) {
-            ForEach(viewModel.shuffledOptions) { option in
+            ForEach(Array(viewModel.shuffledOptions.enumerated()), id: \.offset) { index, option in
                 challengeOptionButton(player: player, option: option)
+                    .id("slot-\(player)-\(index)")
             }
         }
     }
